@@ -159,13 +159,13 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 
 `dongbei-explainer` 更希望这样讲：
 
-> 先别把 `cancel()` 理解成“当场掐断”。event loop 就是那个轮流安排 async task 往下跑的调度器；`cancel()` 更像是在它的待办队列里挂个牌子：这个 task 该取消了。
+> 这事儿到底卡在哪儿？你先别把 `cancel()` 当成“啪一下，当场掐断”。这玩意儿没那么干。event loop 是轮流安排 async task 往下跑的调度器；你调用 `cancel()`，只是往它的待办队列里挂个牌子：这个 task 该取消了。
 >
-> `await asyncio.sleep(0)` 呢？它只保证当前 task 先把位置让出来，让 event loop 转一圈。问题在这儿：这一圈里可能还有“让 task 接着跑”“执行排队的 callback（回调函数）”“把取消异常送进 task”这几步，不是一下全干完。
+> 那 `await asyncio.sleep(0)` 又干了啥？它只保证当前 task 先把位置让出来，让 event loop 转一圈。可这一圈里还排着好几步呢：“让 task 接着跑”“执行排队的 callback（回调函数）”“把取消异常送进 task”。这些活儿不是一把全整完，得按队列一个一个来。
 >
-> 你可以把 event loop 想成一个人按队列办事。你刚说“这单撤了”，不等于他手里的单子当场消失；撤单这件事也得轮到他处理。CPython 这个 issue 里，维护者说明 `sleep(0)` 只让 event loop 往前走一轮，而前后几个 callback 可能分在两三轮里执行，所以多等几次才看到 `CancelledError`，这不是取消失效了。
+> 打个比方，event loop 就像一个人搁窗口按号办事。你刚喊一句“我这单撤了”，他手里的单子不会原地消失；“办撤单”本身也得排到号。CPython 这个 issue 里就是这么回事：`sleep(0)` 只让 event loop 往前走一轮，前后几个 callback 可能摊在两三轮里。多等几轮才看到 `CancelledError`，不是取消没好使，是还没轮到那一步。
 >
-> 真正该记住的是：调用 `cancel()` 只是告诉系统“这个 task 该停了”，不是这行代码一跑，task 就原地没了。`sleep(0)` 也只是让别人先跑一轮，不是把队列里所有事情一次处理完。如果 coroutine——也就是这种能暂停、以后再接着跑的函数——里面有特别吃 CPU 的计算，隔几行塞一个 `sleep(0)` 也治不了根，应该把这段计算交给 thread 或 process executor。
+> 所以说白了，`cancel()` 省不掉“调度器处理取消”这一步；它只是告诉系统“这个 task 该停了”。`sleep(0)` 也只是先把位置让出去，不是让 event loop 把整条队列一次清空。要是 coroutine——这种能暂停、以后再接着跑的函数——里面塞着一大段特别吃 CPU 的计算，那你隔几行硬插一个 `sleep(0)` 也治不了根。该交给 thread 或 process executor 的活儿，还得交出去。
 
 这里的“一个人按队列办事”只负责把先后顺序讲明白，后面马上对应回 task、callback 和 event-loop cycle，没有拿比喻顶替机制。Python 文档也明确提醒：特别吃 CPU、又一直不交回控制权的代码，会让其他 async task 全跟着等；这类计算应该放到 executor 里。[官方 asyncio 开发文档](https://docs.python.org/3/library/asyncio-dev.html#running-blocking-code)
 
@@ -179,13 +179,13 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 
 `dongbei-explainer` 更希望这样讲：
 
-> 这事看着矛盾，其实是两块表量的不是一个东西。
+> 这事儿瞅着挺怪：图上明明才 300 MiB，咋到 500 MiB 就给 container 干掉了？先别急着说监控不准。说白了，是两块表量的压根儿不是一个东西。
 >
-> dashboard 上那条 300 MiB，可能主要是在看某个 container 最近真正在用、不能轻易回收的那部分内存，常见指标名叫 working set。kernel 决定要不要 OOM kill 时，看的却是 cgroup 记下来的总数。cgroup 是 Linux 给一组进程统一记资源账、设上限的机制。issue 里直接读这本账，`memory.usage_in_bytes` 已经到了大约 501 MB，limit 是 500 MiB 左右。再往下拆，程序自己放数据用掉约 322 MB，读写文件留下的缓存页又有约 182 MB，加起来就快顶线了。
+> dashboard 上那条 300 MiB，可能主要盯着 container 最近真正在用、又不容易回收的那部分内存，常见指标名叫 working set。可 kernel 判断要不要 OOM kill，翻的是 cgroup 记的总账。`cgroup` 是啥？你先把它理解成 Linux 给一组进程统一记资源账、顺手卡上限的东西。搁这个 issue 里一查，`memory.usage_in_bytes` 已经到大约 501 MB，limit 才 500 MiB 左右。再把账拆开看：程序自己放数据花了约 322 MB，读写文件留下的缓存页又占约 182 MB。这俩往一块儿一凑，可不就快顶线了吗？
 >
-> 打个短比方：dashboard 像只报“屋里家具占了多少”，cgroup limit 管的是“家具、纸箱和屋里其他东西加一块儿占多少”。你盯着家具只有 300，以为地方还多；房东按总占用一量，已经满了。
+> 你就把它想成一间屋：dashboard 只跟你报“家具占了多少”，cgroup limit 管的却是“家具、纸箱，再加屋里别的东西，总共占多少”。你一瞅家具才占 300，寻思地方还宽敞呢；可人家按全屋一量，已经塞满了。比喻只到这儿，真正触发 OOM 的还是 cgroup 记下来的总内存。
 >
-> 所以别一看两个数不一样，就认定监控坏了。先查图上画的到底是哪一项：是 working set，是 RSS——进程当前占着的物理内存——还是整个 container/pod cgroup 的总内存；再查 500 MiB 的 limit 到底限制哪一级。两个数可能都没算错，只是一个在问“眼下有多少内存不容易收回来”，另一个在问“这个 cgroup 一共记了多少内存”。kernel 按后面这个数决定要不要 OOM kill。
+> 所以碰上这种事咋查？先看图上画的到底是啥：working set、RSS——进程眼下占着的物理内存——还是整个 container/pod cgroup 的总内存；再看 500 MiB 的 limit 到底卡在哪一级。俩数可能谁都没算错：一个问“眼下有多少内存不容易收回来”，另一个问“这个 cgroup 总共记了多少”。kernel 按后面那本账办事，账到线了，它就 OOM kill。
 
 这个 demo 保留了 issue 里的真实数字，也说明了比喻的边界：决定 OOM 的仍是具体 cgroup 层级和 kernel accounting，不是“房间”本身。
 
