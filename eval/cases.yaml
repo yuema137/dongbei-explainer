@@ -1,5 +1,5 @@
 version: 1
-default_audience: technically literate cross-domain science and engineering reader
+default_audience: general STEM reader who can follow technical reasoning but may have no computer-science training or project familiarity
 cases:
   - id: git-branch-worktree
     domain: software

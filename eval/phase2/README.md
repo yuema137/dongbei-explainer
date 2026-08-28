@@ -11,6 +11,8 @@ Each case freezes the relevant PR/issue input instead of depending only on a mut
 - baseline: no dongbei-explainer project skill;
 - full: canonical `dongbei-explainer` composition.
 
+Unless a case explicitly tests another audience, use the project default: a general STEM reader who may have no CS training and has not followed the repository's design history. Do not silently upgrade the audience to “senior engineer” because the source is a technical PR.
+
 The UI randomizes which output is A or B per case and hides the identity by default. Annotation records the assignment so results can be decoded later. Wording equality is irrelevant.
 
 The reviewer records:

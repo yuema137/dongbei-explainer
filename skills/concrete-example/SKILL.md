@@ -6,7 +6,7 @@ license: MIT
 
 # Concrete Example
 
-Choose one item and trace it through the actual mechanism. Prefer real artifacts—commit graphs, requests, rows, tensors, queues, equations—over household metaphors.
+Choose one item and trace it through the actual mechanism. Prefer real artifacts—commit graphs, requests, rows, tensors, queues, equations—over household metaphors. For a project-internal design where those artifacts are themselves unfamiliar, a short structural analogy may establish the actors first; immediately map it to the real names and continue with the real trace.
 
 Use this order:
 
@@ -16,6 +16,6 @@ Use this order:
 4. Show the after state and connect it to the formal term.
 5. State where the example stops matching the general case.
 
-Do not force an analogy. Use one only when its objects and relationships map cleanly and the mapping is shorter than the mechanism. Never let an analogy replace a necessary equation or code path.
+Do not force an analogy. Use one only when its objects and relationships map cleanly and the mapping is shorter than the mechanism. State the mapping explicitly and stop the analogy before its details diverge. Never let it replace a necessary equation or code path.
 
 Read [references/example-patterns.md](references/example-patterns.md) when selecting a representation.

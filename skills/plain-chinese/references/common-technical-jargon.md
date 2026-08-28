@@ -1,6 +1,6 @@
 # Common technical jargon
 
-Dataset version: `2026-08-28.1`. The product owner labeled 223/223 candidate terms for a technically literate, cross-domain Mandarin audience. Preserve every term in English. These are conversation defaults, not claims about every individual reader.
+Dataset version: `2026-08-28.1`. The product owner labeled 223/223 candidate terms for a general-STEM Mandarin audience that may have no CS training. Preserve every established term in English. These are conversation defaults, not claims about every individual reader; project-local labels still require a plain-Chinese responsibility description.
 
 ## Tier 1 — use directly
 

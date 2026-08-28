@@ -13,7 +13,7 @@ These are mostly broadly understandable conversational structures. That is a fea
 
 ## Density
 
-Use zero dialect-marked words when the context is solemn, legally sensitive, safety-critical, or when they make the sentence less exact. In ordinary prose, one or two marked expressions in a short section is usually enough. Judge the whole passage, not a mechanical quota.
+Use zero dialect-marked words when the context is solemn, legally sensitive, safety-critical, or when they make the sentence less exact. When the user explicitly requests Dongbei voice, a medium-length answer that could be mistaken for neutral technical prose has missed the requested register. Use several varied, widely understood markers across the explanation—often two to four is enough—together with short question/answer turns and concrete emphasis. This is a calibration range, not a quota; never repeat one catchphrase or add a marker that obscures the action.
 
 ## Register
 

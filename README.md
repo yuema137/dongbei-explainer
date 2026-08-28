@@ -2,7 +2,7 @@
 
 > 东北话不是目的。讲明白才是目的。
 
-`dongbei-explainer` is a portable Agent Skills toolkit for clear Chinese technical explanation. Its working hypothesis is deliberately modest: a light Northeastern conversational rhythm may push an explanation toward concrete actions, short causal turns, and explicit before/after structure. The project turns that observation into separable skills and calibration material.
+`dongbei-explainer` is a portable Agent Skills toolkit for clear Chinese technical explanation. Its default reader has a general STEM background, but may not know computer science, the current subfield, or the project being explained. Its working hypothesis is deliberately modest: a light Northeastern conversational rhythm may push an explanation toward concrete actions, short causal turns, and explicit before/after structure. The project turns that observation into separable skills and calibration material.
 
 This is **not** a dialect role-play pack, comedy prompt, jargon translator, or claim that Northeastern Mandarin improves model reasoning. Technical correctness stays first.
 

@@ -8,7 +8,7 @@ license: MIT
 
 Make the reader understand what changes and why. Technical correctness outranks ease or tone.
 
-Before writing, determine the audience and requested depth. If neither is stated, assume a technically literate cross-domain reader and level 2.
+Before writing, determine the audience and requested depth. If neither is stated, assume a reader with general STEM background who can follow technical reasoning but may have no computer-science training and no familiarity with this project. Default to level 2.
 
 ## Depth
 
@@ -29,6 +29,8 @@ Build only the relevant parts of this reasoning spine; do not print it as eight 
 8. What does it cost?
 
 Prefer actors, verbs, causal chains, explicit before/after comparisons, and one main idea per sentence. Introduce a formal term when it becomes useful, explain it according to the audience, then reuse it exactly. Preserve code, equations, APIs, and standard English terminology.
+
+STEM literacy does not imply software-engineering vocabulary or project familiarity. The default reader may not know `watchdog`, `sidecar`, `runtime`, `composition projection`, or `Gate 2`. Explain the concrete actor and responsibility on first meaningful use; do not treat internal labels as shared jargon.
 
 End with a preservation check: compare the explanation to the source concept and restore any condition, distinction, or trade-off lost during simplification.
 

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "bundle_id": "2026-08-28-real-projects-v1",
+  "source_created_at": "2026-08-28T20:30:00Z",
+  "exported_at": "2026-08-28T19:43:42.848Z",
+  "imported_at": "2026-08-28T19:47:11.400Z",
+  "completed_cases": 3,
+  "total_cases": 9,
+  "annotations": [
+    {
+      "id": "siderius-pr-248",
+      "title": "SIDERIUS PR #248 — composed path no longer inherits TIDMAD semantics",
+      "a_mode": "baseline",
+      "b_mode": "full",
+      "preference": "b-slight",
+      "flags": [],
+      "comment": "我感觉a明显就是属于太多，解释过少，人完全看不懂。b的解释好了很多，不过composition authority，typed composition projection，这些名词也没有解释，而且太长的jargon我们是不是应该直接翻译成中文呢，下面的regiem-a，cap-scope我也看不懂是什么意思。而且好像没有东北话的加入。",
+      "updated_at": "2026-08-28T19:43:31.786Z"
+    },
+    {
+      "id": "siderius-pr-232",
+      "title": "SIDERIUS PR #232 — DAVIS executable path and cross-task proof",
+      "a_mode": "baseline",
+      "b_mode": "full",
+      "preference": "b-slight",
+      "flags": [],
+      "comment": "我觉得b解释得还挺清楚的，不过没出现什么东北话啊，还是非常技术风格，冷冰冰的，很僵硬",
+      "updated_at": "2026-08-28T19:43:32.005Z"
+    },
+    {
+      "id": "siderius-pr-219",
+      "title": "SIDERIUS PR #219 — task-derived measurement and validation pricing",
+      "a_mode": "baseline",
+      "b_mode": "full",
+      "preference": "b-slight",
+      "flags": [],
+      "comment": "b没有解释sidecar是啥，这个术语看不懂。而且，东北话成分也很少",
+      "updated_at": "2026-08-28T19:43:33.326Z"
+    }
+  ]
+}

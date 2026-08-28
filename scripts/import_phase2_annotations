@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+const fs=require("fs"),path=require("path");
+if(process.argv.length!==4){console.error("usage: scripts/import_phase2_annotations BUNDLE.json EXPORT.json");process.exit(2)}
+const bundle=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));const result=JSON.parse(fs.readFileSync(process.argv[3],"utf8"));
+if(bundle.bundle_id!==result.bundle_id)throw new Error("bundle_id mismatch");
+const rows=[];
+for(const c of bundle.cases){const answer=result.answers?.[c.id];if(!answer?.preference)continue;const assignment=result.assignments[c.id];const aMode=assignment==="baseline-a"?"baseline":"full";const bMode=aMode==="baseline"?"full":"baseline";rows.push({id:c.id,title:c.title,a_mode:aMode,b_mode:bMode,...answer})}
+const normalized={schema_version:1,bundle_id:bundle.bundle_id,source_created_at:result.source_created_at,exported_at:result.exported_at,imported_at:new Date().toISOString(),completed_cases:rows.length,total_cases:bundle.cases.length,annotations:rows};
+const root=path.resolve(__dirname,".."),dest=path.join(root,"eval/phase2/annotations",`${bundle.bundle_id}-partial.json`);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,JSON.stringify(normalized,null,2)+"\n");console.log(`wrote ${dest}: ${rows.length}/${bundle.cases.length} completed`);
