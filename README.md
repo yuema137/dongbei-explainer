@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/dongbei-explainer-title.png" alt="dongbei-explainer：要把大象装冰箱拢共分几步" width="100%">
+</p>
+
 # dongbei-explainer
 
 > **东北话不是目的。讲明白才是目的。**
