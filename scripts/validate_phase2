@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+const fs=require("fs");
+if(process.argv.length<3){console.error("usage: scripts/validate_phase2 BUNDLE.json [...]");process.exit(2)}
+let failed=false;
+for(const filename of process.argv.slice(2)){
+  try{
+    const b=JSON.parse(fs.readFileSync(filename,"utf8"));
+    if(b.schema_version!==1||!b.bundle_id||!Array.isArray(b.cases)||b.cases.length<1||b.cases.length>10)throw new Error("invalid bundle header or case count");
+    const ids=new Set();
+    for(const c of b.cases){
+      if(!/^[a-z0-9][a-z0-9-]*$/.test(c.id)||ids.has(c.id))throw new Error(`invalid/duplicate id ${c.id}`);ids.add(c.id);
+      for(const key of ["title","request","audience"])if(!c[key])throw new Error(`${c.id}: missing ${key}`);
+      if(![1,2,3,4].includes(c.depth)||!c.source?.snapshot||!["issue","pr","other"].includes(c.source?.kind))throw new Error(`${c.id}: invalid source/depth`);
+      if(!c.baseline?.text||c.baseline?.provenance?.skill_mode!=="baseline")throw new Error(`${c.id}: invalid baseline`);
+      if(!c.full?.text||c.full?.provenance?.skill_mode!=="full")throw new Error(`${c.id}: invalid full output`);
+      if(c.baseline.text===c.full.text)throw new Error(`${c.id}: variants are identical`);
+      if(!Array.isArray(c.must_preserve)||!c.must_preserve.length)throw new Error(`${c.id}: missing preservation checks`);
+    }
+    console.log(`ok: ${filename}: ${b.cases.length} cases`);
+  }catch(error){console.error(`error: ${filename}: ${error.message}`);failed=true}
+}
+process.exit(failed?1:0);

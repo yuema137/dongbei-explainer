@@ -25,6 +25,12 @@ The reviewer records:
 
 Import a JSON file matching [`case-bundle.schema.json`](case-bundle.schema.json). Keep the initial round at about ten cases. A case is not ready until both outputs and their generation provenance are present.
 
+Validate a prepared bundle before annotation:
+
+```bash
+scripts/validate_phase2 eval/phase2/bundles/<bundle>.json
+```
+
 The source snapshot should contain only material necessary to explain the case. Do not include secrets, private credentials, personal data, or repository content that should not enter this project.
 
 ## Output

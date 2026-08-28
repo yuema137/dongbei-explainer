@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "bundle_id": "2026-08-28-real-projects-v1",
+  "created_at": "2026-08-28T20:30:00Z",
+  "description": "Nine real explanation cases from SIDERIUS and SciTra Runtime: five SIDERIUS PR/issues, three SciTra Runtime PR/issues, and the SIDERIUS README.",
+  "cases": [
+    {
+      "id": "siderius-pr-248",
+      "title": "SIDERIUS PR #248 — composed path no longer inherits TIDMAD semantics",
+      "source": {
+        "kind": "pr",
+        "url": "https://github.com/Galileo-Sandbox/SIDERIUS/pull/248",
+        "revision": "merge 1555417464bb48982b813458c08a113be60c6c37",
+        "snapshot": "Merged PR. A composed run previously inherited TIDMAD-specific values and prompt science in several paths: data scope, health configuration, run-invariant identity, deliverable naming, planner/proposer/implementor prompts, and plugin handling. The PR introduces typed composition projections and task-owned prompt blocks, removes implicit TIDMAD fallbacks on the owned surfaces, preserves legacy uncomposed behavior byte-for-byte, and adds fail-closed guards. Because the TIDMAD manifest gains proposal_blocks and implementor_blocks, its semantic fingerprint changes; an older composed workspace is intentionally refused on resume. Gates passed. CAP-SCOPE and external child loading remain later work."
+      },
+      "request": "给熟悉 agent/ML workflow、但没跟过 Step 12 设计历史的工程师解释这个 PR 到底改了什么，为什么重要。",
+      "audience": "cross-domain senior software/ML engineer unfamiliar with SIDERIUS design history",
+      "depth": 2,
+      "must_preserve": [
+        "the defect was implicit TIDMAD semantics in composed runs, not merely duplicated code",
+        "legacy uncomposed behavior remains compatible",
+        "typed composition and task-owned prompt blocks change authority ownership",
+        "semantic fingerprint change intentionally makes old composed resumes fail closed",
+        "later extensibility work is explicitly not claimed"
+      ],
+      "baseline": {
+        "text": "该 PR 完成了 composed path 的语义闭包，消除了多个执行与 prompt surface 对 TIDMAD 默认值的隐式依赖。实现上增加 typed composition projection，并把 proposal、implementor 等 prompt science 转移到 task-owned blocks；同时修正 scope、health materialization、run-invariant fingerprint、deliverable naming 和 plugin validation 等路径。未组合的 Regime-A 保持 byte compatibility。由于 TIDMAD manifest 新增了 proposal_blocks 和 implementor_blocks，其 semantic fingerprint 会变化，因此旧 composed workspace 的 resume 会 fail closed。PR 通过了 prompt 与 lifecycle 两类 gate，但不包含 CAP-SCOPE 和 external child loading。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"baseline","notes":"Matched-source baseline; no dongbei-explainer project skill applied."}
+      },
+      "full": {
+        "text": "先看原来的问题：你明明启动的是一个 composed task，系统有些地方却还会偷偷按 TIDMAD 来办。比如数据范围按 TIDMAD 算，health config 又按 TIDMAD 生成，给 planner 和 implementor 的 prompt 里也夹着 TIDMAD 的任务知识。表面上 composition 已经接上了，实际上底下还有好几根线写死在老任务上。\n\n这个 PR 干的核心事，是把“这次 run 到底属于哪个 task、该带哪些语义”收回到一个明确的 composition authority。执行侧通过 typed composition projection 把 scope、health、run identity 等信息送到真正使用它们的地方；LLM 侧则让 proposal 和 implementation blocks 由 task package 自己声明。这样 composed run 不再靠 TIDMAD fallback 猜语义。\n\n它还守住了两个边界。第一，老的 uncomposed Regime-A 路径保持原样，不因为这次泛化改造被顺手改坏。第二，旧 composed workspace 如果是在新 blocks 加入前创建的，resume 会被拒绝：因为 task 的 semantic fingerprint 已经变了，继续跑会把两套语义混在一个实验里。这个 fail closed 是保护可比性，不是兼容性事故。\n\n这次没把所有 extensibility 都做完。CAP-SCOPE、external child loading 和后续外部插件生命周期仍留给下一阶段；PR 关闭的是它负责的那些隐式 TIDMAD 语义。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"full","notes":"Applied canonical dongbei-explainer composition at level 2."}
+      }
+    },
+    {
+      "id": "siderius-pr-232",
+      "title": "SIDERIUS PR #232 — DAVIS executable path and cross-task proof",
+      "source": {
+        "kind": "pr",
+        "url": "https://github.com/Galileo-Sandbox/SIDERIUS/pull/232",
+        "revision": "merge 4db414b599bb1a41357ad694f78bceec4f4577e1",
+        "snapshot": "Merged integrated D14 stack. DAVIS 2017 future-frame prediction now runs pinned licensed frames through a deterministic clip manifest, the generic production training/inference path, npz deliverables, and GlobalMseMetric. The global MSE implementation is pinned by an unequal-sample test where mean-of-means would be wrong. A real gate trained and scored 15 predictions, slightly beating last-frame copy. Together with TIDMAD and Oxford Pets, the stack demonstrates three tasks with different shapes, objectives, deliverables, and metrics without task-name branches or production dependencies on examples/. The stacked PRs were semantically reviewed separately but the exact integrated stack was merged once."
+      },
+      "request": "解释这个 PR 为什么不只是‘新增一个 DAVIS example’，它对通用数据路径的证明是什么。",
+      "audience": "ML systems engineer familiar with training pipelines",
+      "depth": 2,
+      "must_preserve": ["real data flows through production training, inference, and scoring", "clip scope is deterministic and leakage is guarded by sequence disjointness", "global MSE differs from mean-of-means", "three-task breadth is evidence against task-name branching", "single-round evidence is not multi-iteration research maturity"],
+      "baseline": {
+        "text": "PR #232 adds an executable DAVIS future-frame prediction task and completes D14 cross-task validation. It introduces license-verified frame acquisition, deterministic clip manifests, a DAVIS data path, an npz deliverable, and GlobalMseMetric. The reference predictor was trained and evaluated through the production engine, producing 15 predictions and an MSE of 0.017290 versus 0.017392 for last-frame copy. Combined with TIDMAD and Oxford Pets, this validates that the generic architecture supports heterogeneous input/target shapes, objectives, deliverables, and metrics without task-name branches. The integrated three-PR stack was merged once after separate semantic review. This is an executable single-round proof, not evidence of equal multi-iteration maturity across all tasks.",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"baseline"}
+      },
+      "full": {
+        "text": "这不是“examples 目录里又多了个视频任务”这么简单。真正要证明的是：换成一种完全不同的数据形状，SIDERIUS 的 production chain 还能不能不改核心逻辑，照样完成训练、推理和评分。\n\nDAVIS 这条链是这样的：先从固定版本的原始帧生成确定性的 clip manifest；train、validation、final 按 sequence 分开，防止同一视频前后片段跨集合泄漏。然后这些 clips 走通用 data-path 接口进入真实训练和 inference，预测结果写成 npz，最后由 `GlobalMseMetric` 评分。这里特意用样本大小不等的测试钉住算法：应该把所有像素误差放在一起算 global mean，不能先对每个样本求 MSE 再平均，不然例子里会把正确的 3.2 算成 2.0。\n\nGate 不是只看接口能不能 import。它真的训练了 reference predictor，产出 15 份预测，MSE 0.017290，略好于 last-frame-copy 的 0.017392。提升很小，但这轮 gate 要证明的是整条生产路径可执行，不是宣称模型多先进。\n\n再把它和 TIDMAD、Oxford Pets 放一块儿看：三者的数据维度、target、objective、deliverable 和 metric 都不同，generic core 里却不需要按 task name 分支，production 也不反向依赖 examples。这个 PR 提供的是“通用 seam 真能承载第三种结构”的实证。它仍只是单轮 executable witness，不代表 DAVIS 已经达到 TIDMAD 的多轮研究成熟度。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"full"}
+      }
+    },
+    {
+      "id": "siderius-pr-219",
+      "title": "SIDERIUS PR #219 — task-derived measurement and validation pricing",
+      "source": {
+        "kind": "pr",
+        "url": "https://github.com/Galileo-Sandbox/SIDERIUS/pull/219",
+        "revision": "merge 52bd98ba1c7c57c39a8e8eef36d05f819513f6ca",
+        "snapshot": "Merged PR with two capability blocks. Measurement batches and model-boundary dtype become derived from DatasetProfile and ModelIOContract instead of model-name/TIDMAD branches. Runtime deadlines change from train estimate plus overhead to train plus validation estimates plus overhead. Gate attempt 1 found that validation prediction was persisted only after _validation_pass returned, so the running process never received the refreshed deadline and was killed during validation. A real-sidecar order regression and production fix landed; attempt 3 passed. Admission semantics and prompts were deliberately unchanged."
+      },
+      "request": "解释这个 PR 的两个改动，以及为什么一万条 unit test 通过后 real gate 还能找到关键 bug。",
+      "audience": "senior engineer familiar with runtime watchdogs and ML validation",
+      "depth": 3,
+      "must_preserve": ["measurement data becomes capability-derived", "deadline must include validation", "the defect was persistence timing, not deadline arithmetic", "unit test used an already-updated synthetic sidecar", "new regression observes real sidecar ordering"],
+      "baseline": {
+        "text": "PR #219 contains two changes. First, GPU measurement inputs are derived from DatasetProfile and ModelIOContract through a shared bounded probe-batch builder, eliminating model-name branches and TIDMAD_DATA_DIR usage in runtime control. Second, runtime deadline estimation becomes T_deadline = T_train + T_val + overhead + margin. Gate 2 exposed a persistence-order defect: _validation_pass updated prediction state only after returning, so the watchdog sidecar lacked the validation term while the pass was running and killed the process using the old deadline. Existing unit tests validated arithmetic against a pre-updated synthetic sidecar, not the write timing. The fix persists the validation estimate during the pass, and a regression reads the real sidecar before completion to assert event order. Attempt 3 passed the full path.",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"baseline"}
+      },
+      "full": {
+        "text": "这个 PR 其实修两条不同的线。\n\n第一条是“测量数据从哪来”。原来 runtime 里还会看 model name、找 TIDMAD 路径，再决定拿什么 batch 去测 GPU。现在它只认能力契约：`DatasetProfile` 告诉它数据怎么取，`ModelIOContract` 告诉它模型边界需要什么 dtype。同一个 bounded probe-batch builder 同时给 worker 和进程内 probe 用。这样换任务时，不用再往 runtime 里塞一个新的任务名分支。\n\n第二条是 watchdog 到底给一次 run 留多长时间。原公式主要给 training 计价，validation 像是没进账。新公式把它明确加进去：`T_deadline = T̂_train + T̂_val + overhead + margin`。\n\n真正有意思的是，Gate 2 发现问题还不只在公式。attempt 1 跑了约一万条 unit test 都绿，真实 run 还是在 validation 中途被杀。顺着 sidecar 看才发现：`_validation_pass` 把新的 validation prediction 留在局部状态里，等函数 return 后才写出去。可 watchdog 在函数运行期间就要读这个数；它读不到，只能继续用旧 deadline。\n\n老测试为什么没抓住？它手工造了一个“已经更新完成”的 sidecar，只证明加法没算错，没证明更新时间对不对。新 regression 直接观察运行中的真实 sidecar，并断言 prediction 必须先持久化、validation 再继续。说白了，这回 Gate 测到的是时序，unit test 原来只测了结果。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"full"}
+      }
+    },
+    {
+      "id": "siderius-issue-378",
+      "title": "SIDERIUS issue #378 — campaign policy trapped in infrastructure",
+      "source": {
+        "kind": "issue",
+        "url": "https://github.com/Galileo-Sandbox/SIDERIUS/issues/378",
+        "revision": "SIDERIUS master ed61f961893f6c384f774c3c179076f2eee7cb6c",
+        "snapshot": "Open follow-up. Campaign/task policy values were literals in tagged infrastructure with no override seam. Initially formal_time_budget_minutes=120 and a 200-minute formal bypass were named: one value lived in a frozen row; the other assignment overwrote an exported environment variable; passthrough rejected both flags. PR #380 in v0.1.2 externalized these two values with ${VAR:-default}, preserving unset behavior. The issue remains open for the general class: inventory policy literals and provide one declared override mechanism instead of ad hoc per-value seams."
+      },
+      "request": "解释这个 issue 现在还剩什么问题，别把已经在 v0.1.2 修掉的两行当成当前 bug。",
+      "audience": "release and infrastructure engineer",
+      "depth": 2,
+      "must_preserve": ["policy values and infrastructure mechanism have different ownership", "the two named values are already fixed", "defaults and unset behavior stayed unchanged", "current scope is a general inventory and override mechanism", "a tiny code change still carried release-lane cost"],
+      "baseline": {
+        "text": "Issue #378 concerns campaign policy values embedded in versioned infrastructure without external override paths. The original examples were formal_time_budget_minutes=120 and GOLD_BYPASS_FORMAL_TIME_BUDGET_MINUTES=200; environment or passthrough overrides were ineffective. PR #380 fixed those two instances in v0.1.2 with ${VAR:-default} semantics while preserving default behavior. The issue remains open because the systemic problem is unresolved: policy mutability currently depends on whether an individual seam was implemented. Remaining work is to inventory campaign-policy literals and define a uniform override mechanism, rather than adding one-off environment variables. Such changes also require patch-release and deployment evidence despite small source diffs.",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"baseline"}
+      },
+      "full": {
+        "text": "先把状态说准：issue 最早点名的 120 分钟和 200 分钟这两个值，v0.1.2 已经修了。现在导出环境变量就能覆盖，没导出时仍用原来的 120/200，所以默认 launch 行为没变。\n\n还没解决的是一整类设计问题：哪些值属于 campaign policy，哪些属于 infrastructure？原来这件事不是由一个明确规则决定，而是看某个值有没有人顺手给它做 override seam。VRAM budget 有 seam，就能在不改代码的情况下调整；time budget 没 seam，就得改 infrastructure、重新打 tag、重建 bundle、部署并重验。值同样属于实验政策，可操作性却碰运气。\n\n所以当前 issue 不是“再改那两行”，而是要把 `GOLD_FROZEN_ROWS` 和 launcher 里的 policy literals 盘一遍，再给这一类值一个统一、可声明、可验证的外置入口。repo 继续负责变量名、默认值、校验和消费方式；campaign config 负责这次到底取多少。这样改政策不用每次重新发 infrastructure，也不会让 override 悄悄生效而不可见。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"full"}
+      }
+    },
+    {
+      "id": "siderius-issue-309",
+      "title": "SIDERIUS issue #309 — planner offers losses the task cannot execute",
+      "source": {
+        "kind": "issue",
+        "url": "https://github.com/Galileo-Sandbox/SIDERIUS/issues/309",
+        "revision": "SIDERIUS master ed61f961893f6c384f774c3c179076f2eee7cb6c",
+        "snapshot": "Open issue from a composed quickstart witness. The tuner planner offers legacy losses without filtering them against the task's ModelIOContract. It can choose focal/focal_cw, whose per-timestep geometry is incompatible with a composed [B,C] classification output, burning the attempt. Since v0.1.3, validation explicitly refuses the mismatch during admission instead of failing opaquely inside the resource probe, but planner offer-side filtering remains absent. Desired behavior is one fail-closed compatibility authority used to construct the offered loss set, while legacy behavior stays compatible."
+      },
+      "request": "解释为什么‘现在已经能提前报错’仍然没有解决这个 issue。",
+      "audience": "ML platform engineer",
+      "depth": 2,
+      "must_preserve": ["planner offer and execution admission are different stages", "the geometry mismatch is now named and rejected earlier", "an ineligible offer still wastes an LLM attempt", "compatibility should derive from ModelIOContract", "legacy path compatibility matters"],
+      "baseline": {
+        "text": "The issue is an offer-time versus admission-time validation gap. The planner exposes the legacy loss set without applying ModelIOContract compatibility, allowing the LLM to select focal or focal_cw for a [B,C] output even though those losses require a temporal-axis geometry. v0.1.3 added validate_loss_output_geometry, so the mismatch is now rejected explicitly at admission rather than failing inside the resource probe. However, the attempt is still consumed because the invalid loss was offered and selected. The remaining fix is to derive the planner's loss offer from the same fail-closed compatibility authority, while keeping the legacy path unchanged, and verify that refusal happens before selection rather than during execution.",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"baseline"}
+      },
+      "full": {
+        "text": "现在的改进是“错得更早、更明白”，还不是“别让它选错”。\n\n一条 attempt 先经过 planner：planner 把可选 loss 列给 LLM，LLM 从里面挑一个。后面到 admission，系统才检查这个 loss 能不能吃当前模型的输出。composed task 输出是 `[B,C]`，没有 temporal axis；`focal`、`focal_cw` 这类 loss 却按 `[B,C,T]` 的形状工作。\n\nv0.1.3 以后，系统已经能在 admission 明确说“这个 loss 和 `ModelIOContract` 不兼容”，不会再等到 resource probe 里面炸出一个难懂的 `permute(sparse_coo)` 错误。这确实更好，但 LLM 调用和选择机会已经花掉了：planner 还是先把不能用的选项递了过去。\n\n这个 issue 要补的是前半段。planner 在列候选时，就应该从同一个 compatibility authority 推导“这个 task 能用哪些 loss”，不兼容的根本别 offer。这样 admission 仍然保留为安全兜底，但正常路径不会先诱导 LLM 选一个必定被拒绝的方案。省掉的是无效 attempt，不是删掉后面的验证。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"full"}
+      }
+    },
+    {
+      "id": "scitra-pr-74",
+      "title": "SciTra Runtime PR #74 — separate NVIDIA query/parsing from Docker execution",
+      "source": {
+        "kind": "pr",
+        "url": "https://github.com/yuema137/SciTra-Runtime/pull/74",
+        "revision": "merge 49b9ec0cc9bbfeb702e1f156396912370352d05d",
+        "snapshot": "Merged PR. Host nvidia-smi query execution and reusable CSV parsers move from src/docker.rs into a new src/nvidia_smi.rs module. scitra doctor and immutable run metadata reuse the query API. Tests cover malformed/inconsistent CSV, unavailable devices, and utilization data. Monitor parsing remains scoped rather than becoming a catch-all module. 198 Rust tests and deployment checks passed."
+      },
+      "request": "解释这个 refactor 改了哪个责任边界，为什么不是单纯搬文件。",
+      "audience": "Rust engineer new to SciTra Runtime",
+      "depth": 2,
+      "must_preserve": ["host command execution and parsing leave docker.rs", "doctor and run metadata share the API", "parsing failure cases are tested", "monitor-specific concerns remain scoped", "runtime behavior is intended to remain the same"],
+      "baseline": {
+        "text": "PR #74 extracts NVIDIA GPU discovery from docker.rs into a dedicated nvidia_smi module. The module owns host nvidia-smi command execution and reusable CSV parsing, and is consumed by scitra doctor and immutable run-metadata capture. This removes roughly 185 lines from Docker orchestration and establishes a shared API for GPU facts. Tests cover malformed and inconsistent CSV, unavailable GPUs, and utilization records. Monitor parsing is intentionally kept separate, so nvidia_smi.rs does not become a general monitoring module. The change is a responsibility refactor intended to preserve behavior while reducing duplication and coupling.",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"baseline"}
+      },
+      "full": {
+        "text": "原来 `docker.rs` 不光负责起 container，还顺手负责在 host 上跑 `nvidia-smi`、拆 CSV、判断 GPU 信息能不能用。问题不是文件长，而是责任串了：`scitra doctor` 想检查 GPU，run metadata 想记录 GPU，都得绕到 Docker 这层，或者各写一份解析。\n\n这个 PR 把边界重新划了一下。新的 `nvidia_smi.rs` 只管两件事：在 host 上执行 NVIDIA query，以及把返回的 CSV 解析成可复用的数据。`doctor` 和 immutable run metadata 都从这里拿同一套事实；`docker.rs` 回去专心管 container execution。\n\n它也没把所有 GPU 代码一股脑塞进新模块。monitor 自己的采样和解析仍留在 monitor 边界里，避免 `nvidia_smi.rs` 变成啥都管的杂物间。针对 malformed CSV、列不一致、设备不可用和 utilization 数据的测试，钉住了搬家前后的行为。\n\n所以这不只是移动 185 行代码。它改的是“谁有权解释 host NVIDIA 输出”，让 doctor 和 metadata 共用一个 authority，同时不改变对外 runtime 语义。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"full"}
+      }
+    },
+    {
+      "id": "scitra-pr-61",
+      "title": "SciTra Runtime PR #61 — GPU requests, monitoring, and accounting",
+      "source": {
+        "kind": "pr",
+        "url": "https://github.com/yuema137/SciTra-Runtime/pull/61",
+        "revision": "merge e25f35fa1a8cfd4fc7f35f61a21b525046a3ca66",
+        "snapshot": "Merged PR. Tasks can declare positive [resources].gpus; Docker receives structured --gpus <count>. gpu_hours is requested GPU count multiplied by container execution interval, measured with a monotonic host clock: allocation-based, not utilization-weighted, and not exclusive scheduling. Review follow-up adds per-monitor process groups and TERM/KILL cleanup, a common 10-second sampling interval, nvidia-smi utilization.gpu and memory sampling, trapezoidal gpu_compute_hours/gpu_memory_hours, and peak metrics. Real Docker/NVIDIA and test validation passed."
+      },
+      "request": "解释这里几个 GPU 指标分别在量什么，以及为什么 gpus=1 不等于独占一张 GPU。",
+      "audience": "scientific computing user who understands GPU basics",
+      "depth": 2,
+      "must_preserve": ["resources.gpus controls exposure/request", "gpu_hours is allocation-time product", "gpu_compute_hours and gpu_memory_hours integrate sampled utilization", "Docker exposure is not exclusive scheduling", "monitor process cleanup matters operationally"],
+      "baseline": {
+        "text": "PR #61 adds GPU resource declarations and accounting. A positive [resources].gpus value is passed to Docker as --gpus <count>. gpu_hours is allocation-based: requested GPU count multiplied by the container execution interval measured on the host monotonic clock; it is neither utilization-weighted nor evidence of exclusive allocation. The monitoring layer samples utilization.gpu and memory usage every 10 seconds, integrates them trapezoidally into gpu_compute_hours and gpu_memory_hours, and records peak metrics. Monitor processes run in separate process groups with TERM/KILL cleanup to prevent descendant leaks. Thus the request, elapsed allocation, sampled compute activity, and sampled memory activity are distinct measurements.",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"baseline"}
+      },
+      "full": {
+        "text": "这几个数别混一块儿看。\n\n`[resources].gpus = 1` 先干的是资源暴露：runtime 给 Docker 传 `--gpus 1`，让 container 看见一张 GPU。它不等于“调度器把整张卡独占给你”；别的 workload 能不能同时用，取决于 host 外面的调度和部署方式。\n\n`gpu_hours` 算的是占用窗口，不看 GPU 忙不忙。比如请求 2 张 GPU，container 跑了 30 分钟，就是 `2 × 0.5 = 1 gpu_hour`。时间用 host monotonic clock 量，机器调时钟不会把账带跑偏。\n\n`gpu_compute_hours` 和 `gpu_memory_hours` 才看采样到的活动。monitor 每 10 秒读一次 `nvidia-smi`：一个积分 `utilization.gpu`，另一个积分显存使用比例，并用 trapezoidal integration 把离散样本累成时间量。peak metrics 则记录最高点，不是积分。\n\n所以可能出现 `gpu_hours` 很高、`gpu_compute_hours` 很低：卡一直暴露给 container，但程序大部分时间在等数据。PR 还给每个 monitor 单独建 process group，并在结束时 TERM/KILL 整棵子进程树；这是防止采样进程或它的后代在 run 结束后还挂着。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"full"}
+      }
+    },
+    {
+      "id": "scitra-issue-102",
+      "title": "SciTra Runtime issue #102 — evaluating agent-authored executable models",
+      "source": {
+        "kind": "issue",
+        "url": "https://github.com/yuema137/SciTra-Runtime/issues/102",
+        "revision": "SciTra Runtime origin/main 07b6d37674a7f46e147d01de3f4a0ecc9cb52d36",
+        "snapshot": "Open design gap. Current evaluators may inspect artifacts but must never execute/import agent-authored files. That blocks hidden-data evaluation when the agent must design executable model architecture. A current smoke test works around it by fixing evaluator-owned architecture and accepting only weights.pt plus config.json, but that narrows the task. Static/AST inspection cannot prove arbitrary code safe; a subprocess alone inherits mounts, environment, filesystem, and currently network access (#88). Suggested direction is an opt-in, separately isolated processor tier with no network by default, read-only trusted inputs, scoped output, non-root execution, and resource/time limits. LLM-as-judge is not a sandbox."
+      },
+      "request": "解释这个 issue 为什么不能简单地‘subprocess 跑一下 agent 的模型’，以及现在的 workaround 丢了什么能力。",
+      "audience": "agent-evaluation and ML infrastructure engineer",
+      "depth": 2,
+      "must_preserve": ["independent hidden-data scoring may require execution", "fixed architecture plus weights is safe but narrows agent freedom", "subprocess is process control, not a security boundary", "current network isolation gap raises risk", "LLM-as-judge cannot replace deterministic execution or isolation"],
+      "baseline": {
+        "text": "Issue #102 identifies a conflict between independent model evaluation and the runtime's prohibition on executing agent-authored files. Hidden-data scoring for an agent-designed architecture requires executing that architecture. The current workaround fixes the architecture in trusted evaluator code and accepts only weights plus configuration, which permits safe hidden-data testing but removes architecture design from the task. Running arbitrary agent code in a subprocess is insufficient because it inherits the evaluator container's mounts, environment, filesystem, and network; static inspection cannot prove safety, and LLM-as-judge cannot provide isolation. The proposed direction is an explicit opt-in processor tier with a separate hardened environment, network disabled by default, read-only inputs, constrained outputs, non-root execution, and resource/time limits.",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"baseline"}
+      },
+      "full": {
+        "text": "这事卡在两个要求正面冲突。评分必须独立：模型得在没见过的 hidden data 上真跑一遍，不能信 agent 自己报的分。可当前安全契约又规定 evaluator 只能看 agent 产物，不能执行或 import 它写的任何代码。\n\n现在的 workaround 是 evaluator 先把网络结构定死，只让 agent 交 `weights.pt` 和 `config.json`。evaluator 用自己可信的 class 加载 weights，再跑 hidden trials。这个办法安全边界清楚，但代价也明确：agent 只能训练参数，不能设计 cell 内部计算。对“让 agent 发明 recurrent architecture”这种任务，核心自由度已经被拿掉了。\n\n那为啥不能 `subprocess` 跑一下？因为 subprocess 只帮你管进程、timeout 和退出码，不会自动隔离权限。agent 代码仍可能看到当前 container 的 mounts、环境变量、文件系统；#88 没关之前还有 network。先做 AST 检查也只能抓明显模式，证明不了任意代码安全。`LLM-as-judge` 可以辅助看结果或作弊迹象，但它既不是 sandbox，也不能替代 hidden-data 上的确定性执行。\n\n真要支持这类任务，需要单独的 opt-in processor tier：默认断网，只读挂载 trusted input，非 root，输出口收紧，再加资源和时间限制。普通 rubric 继续只看不跑；只有明确需要执行 agent artifact 的任务才进入这条更硬的隔离通道。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"full"}
+      }
+    },
+    {
+      "id": "siderius-readme",
+      "title": "SIDERIUS README — explain the project and its trust boundary",
+      "source": {
+        "kind": "other",
+        "url": "https://github.com/Galileo-Sandbox/SIDERIUS/blob/ed61f961893f6c384f774c3c179076f2eee7cb6c/README.md",
+        "revision": "ed61f961893f6c384f774c3c179076f2eee7cb6c",
+        "snapshot": "README at ed61f961. SIDERIUS is a closed-loop framework for supervised scientific ML: read evidence, propose model code, implement, validate, train, score, assess trustworthiness, interpret, repeat. LLM agents make judgment-heavy choices; deterministic code owns data selection, training, scoring, validity, and provenance. It is not AutoML over a fixed search space, a general agent framework, or merely a hyperparameter sweeper. Tasks are externalizable YAML manifests plus necessary plugins. Only the primary metric ranks models; secondary metrics are observational and health-gate PASS only means no detected invalidity. TIDMAD has multi-iteration evidence; Pets and DAVIS have single composed-round evidence. Fresh vs resume is workspace-based and semantic changes are refused by an invariants lock."
+      },
+      "request": "给一个懂 ML、第一次看到 SIDERIUS 的工程师解释这个项目是干什么的，重点讲清 agent 和 deterministic code 的边界。",
+      "audience": "ML engineer evaluating whether SIDERIUS fits a scientific research workflow",
+      "depth": 2,
+      "must_preserve": ["closed-loop research differs from fixed-space AutoML", "LLM judgment and deterministic authority are separated", "only primary metric selects", "health gate is not scientific success", "demonstrated maturity differs across tasks", "resume refuses changed semantics"],
+      "baseline": {
+        "text": "SIDERIUS is a closed-loop framework for supervised scientific machine learning. It automates the sequence from evidence review and model proposal through implementation, validation, training, scoring, diagnosis, and iteration. LLM agents handle judgment-heavy steps such as hypothesis formation and choosing the next experiment, while deterministic components exclusively control data selection, training, metrics, validity checks, and provenance. Unlike AutoML, it generates new model code rather than searching a fixed architecture space; unlike a general agent framework, it uses a fixed workflow. Tasks are declared through manifests and plugins. Only the primary metric ranks models; secondary metrics are observational, and a health-gate pass indicates validity rather than scientific success. TIDMAD has multi-iteration evidence, while Pets and DAVIS currently provide single-round composed-path evidence. Resume is tied to a semantic identity lock, so changing task semantics requires a fresh workspace.",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"baseline"}
+      },
+      "full": {
+        "text": "SIDERIUS 想自动化的不是“多试几组参数”，而是一整轮研究：先看上一轮证据，判断模型为什么表现成这样，再提新结构、写代码、检查、训练、评分、解释结果，然后决定下一轮试啥。\n\n关键边界在这儿：LLM agent 负责需要判断的部分，比如提出 hypothesis、选择下一种 model design；但它不能碰决定实验事实的尺子。数据选哪些、训练到底跑了什么、metric 怎么算、结果是否有效、provenance 怎么记，都由 deterministic code 控制。这样 agent 可以有创意，却不能为了让结果好看去换测试集、改评分方向或者跳过 validity check。\n\n所以它不是普通 AutoML。AutoML 往往在预先给定的空间里搜索；SIDERIUS 会让 agent 写新的 model code。它也不是通用 agent framework，因为 workflow 路径是固定的；hyperparameter tuning 只是中间一段。一个新 task 主要通过 YAML manifest 和必要 plugin 声明，原则上不该逼 framework core 加 task-name 分支。\n\n看结果时还得分清四类信号。只有 primary metric 决定模型排序；secondary metrics 只供观察。health gate PASS 也不等于科学成功，只说明暂时没检测到 collapse 或无效状态。证据成熟度同样不能抹平：TIDMAD 跑过多轮 research chain，Pets 和 DAVIS 目前证明的是 composed production path 能完成一轮。\n\n最后，resume 不是“拿旧目录接着跑就行”。workspace 里锁着 data scope、health config 等 semantic identity；这些声明变了，系统会拒绝 resume，要求新 workspace，避免把不可比的实验接在一起。",
+        "provenance": {"host":"codex","model":"gpt-5","generated_at":"2026-08-28T20:30:00Z","skill_mode":"full"}
+      }
+    }
+  ]
+}
