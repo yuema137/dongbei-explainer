@@ -14,6 +14,7 @@
 - 给一个具体例子，让数据、控制或状态真走一遍；
 - 正式术语该留就留，但第一次需要时马上讲明白；
 - 术语外面的中文得像真人会说的话，不能自己再造“同步强杀”这种压缩黑话；
+- 不用中文破折号往一句话中间硬塞补充说明，拆成真人会说的短句；
 - 说清它解决了啥，也说清它没解决啥。
 
 目标读者是有一般 STEM 背景的人：能跟技术推理，但不一定学过计算机，也不需要熟悉正在解释的项目。
@@ -165,7 +166,7 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 >
 > 打个比方，event loop 就像一个人搁窗口按号办事。你刚喊一句“我这单撤了”，他手里的单子不会原地消失；“办撤单”本身也得排到号。CPython 这个 issue 里就是这么回事：`sleep(0)` 只让 event loop 往前走一轮，前后几个 callback 可能摊在两三轮里。多等几轮才看到 `CancelledError`，不是取消没好使，是还没轮到那一步。
 >
-> 所以说白了，`cancel()` 省不掉“调度器处理取消”这一步；它只是告诉系统“这个 task 该停了”。`sleep(0)` 也只是先把位置让出去，不是让 event loop 把整条队列一次清空。要是 coroutine——这种能暂停、以后再接着跑的函数——里面塞着一大段特别吃 CPU 的计算，那你隔几行硬插一个 `sleep(0)` 也治不了根。该交给 thread 或 process executor 的活儿，还得交出去。
+> 所以说白了，`cancel()` 省不掉“调度器处理取消”这一步；它只是告诉系统“这个 task 该停了”。`sleep(0)` 也只是先把位置让出去，不是让 event loop 把整条队列一次清空。coroutine 就是这种能暂停、以后再接着跑的函数。要是里面塞着一大段特别吃 CPU 的计算，那你隔几行硬插一个 `sleep(0)` 也治不了根。该交给 thread 或 process executor 的活儿，还得交出去。
 
 这里的“一个人按队列办事”只负责把先后顺序讲明白，后面马上对应回 task、callback 和 event-loop cycle，没有拿比喻顶替机制。Python 文档也明确提醒：特别吃 CPU、又一直不交回控制权的代码，会让其他 async task 全跟着等；这类计算应该放到 executor 里。[官方 asyncio 开发文档](https://docs.python.org/3/library/asyncio-dev.html#running-blocking-code)
 
@@ -185,7 +186,7 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 >
 > 你就把它想成一间屋：dashboard 只跟你报“家具占了多少”，cgroup limit 管的却是“家具、纸箱，再加屋里别的东西，总共占多少”。你一瞅家具才占 300，寻思地方还宽敞呢；可人家按全屋一量，已经塞满了。比喻只到这儿，真正触发 OOM 的还是 cgroup 记下来的总内存。
 >
-> 所以碰上这种事咋查？先看图上画的到底是啥：working set、RSS——进程眼下占着的物理内存——还是整个 container/pod cgroup 的总内存；再看 500 MiB 的 limit 到底卡在哪一级。俩数可能谁都没算错：一个问“眼下有多少内存不容易收回来”，另一个问“这个 cgroup 总共记了多少”。kernel 按后面那本账办事，账到线了，它就 OOM kill。
+> 所以碰上这种事咋查？先看图上画的到底是啥：working set、RSS，还是整个 container/pod cgroup 的总内存。RSS 指进程眼下占着的物理内存。接着再看 500 MiB 的 limit 到底卡在哪一级。俩数可能谁都没算错：一个问“眼下有多少内存不容易收回来”，另一个问“这个 cgroup 总共记了多少”。kernel 按后面那本账办事，账到线了，它就 OOM kill。
 
 这个 demo 保留了 issue 里的真实数字，也说明了比喻的边界：决定 OOM 的仍是具体 cgroup 层级和 kernel accounting，不是“房间”本身。
 

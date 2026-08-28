@@ -11,6 +11,9 @@ failed = False
 for term in BANNED:
     if term in text:
         print(f"error: excluded expression: {term}"); failed = True
+if "——" in text:
+    print("error: Chinese em dash makes spoken explanation read like edited prose")
+    failed = True
 count = sum(len(re.findall(re.escape(term), text)) for term in MARKED)
 sentences = max(1, len(re.findall(r"[。！？!?]", text)))
 if count >= 4 and count / sentences > 0.35:

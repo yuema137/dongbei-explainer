@@ -14,6 +14,8 @@ Apply an aloud test to the Chinese around necessary jargon: would a technically 
 
 Necessary jargon may remain as an exact island inside an otherwise natural sentence. Do not make every word around it sound like documentation.
 
+Do not use Chinese em dashes (`——`) to wedge definitions or side notes into a spoken explanation. People rarely talk in nested punctuation. End the sentence, use a comma or colon, or explain the term in the next short clause. Parentheses are acceptable for exact notation, but do not use them to hide another long sentence.
+
 Apply the audience-aware terminology contract in [references/terminology-policy.md](references/terminology-policy.md). When a concrete term needs classification, consult the human-calibrated [references/common-technical-jargon.md](references/common-technical-jargon.md). Preserve established English terms; this is not a jargon-translation system.
 
 During revision, flag:
@@ -25,6 +27,7 @@ During revision, flag:
 - repeated first-use definitions;
 - filler transitions and teacherly restatement.
 - Chinese that is grammatically valid but nobody would normally say aloud.
+- em-dash insertions that should be separate spoken clauses.
 
 Keep the user's requested precision and length. Do not turn every answer into a lesson.
 
