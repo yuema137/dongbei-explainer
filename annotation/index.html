@@ -5,7 +5,7 @@
   <title>dongbei-explainer 边界标注</title><link rel="stylesheet" href="style.css">
 </head>
 <body><main>
-  <header><p class="eyebrow">dongbei-explainer · human calibration</p><h1>边界别靠猜，咱一张张定。</h1><p class="lede">这里标的是“技术型跨领域读者能不能直接跟上”，不是查字典，也不是考东北话纯度。所有候选都只是待审材料。</p></header>
+  <header><p class="eyebrow">dongbei-explainer · human calibration</p><h1>边界别靠猜，咱一张张定。</h1><p class="lede">这里标的是“普通话用户能不能直接跟上”，不是查字典，也不是考东北话纯度。点选答案后会自动进入下一张；所有候选都只是待审材料。</p></header>
   <section class="toolbar" aria-label="标注控制"><div class="tabs" role="tablist"><button class="tab active" data-deck="dongbei">东北表达</button><button class="tab" data-deck="terms">英文术语</button></div><div class="actions"><button id="show-unlabeled">只看未标</button><button id="export">导出 JSON</button><button id="reset" class="quiet">清空当前组</button></div></section>
   <section class="progress-wrap"><div><span id="deck-name"></span><strong id="progress-text"></strong></div><div class="progress"><span id="progress-bar"></span></div></section>
   <section class="card" aria-live="polite"><div class="card-top"><span id="category" class="pill"></span><span id="position"></span></div><h2 id="candidate"></h2><p id="context" class="context"></p><p id="question" class="question"></p><div id="choices" class="choices"></div><label for="note">备注（可选）</label><textarea id="note" rows="3" placeholder="例如：南方读者能懂，但放在技术文档里像表演；或：做 ML 的知道，普通软件工程师未必。"></textarea><div class="nav"><button id="prev" class="quiet">← 上一张</button><button id="skip" class="quiet">跳过</button><button id="next">下一张 →</button></div></section>
