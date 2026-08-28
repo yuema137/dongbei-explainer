@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+"""Validate portable skill metadata, relative links, eval shape, and candidate uniqueness."""
+from __future__ import annotations
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+errors: list[str] = []
+skills = sorted((ROOT / "skills").glob("*/SKILL.md"))
+if not skills:
+    errors.append("no skills found")
+for skill in skills:
+    text = skill.read_text()
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        errors.append(f"{skill}: missing frontmatter")
+        continue
+    front = parts[1]
+    name = re.search(r"(?m)^name:\s*([^\n]+)$", front)
+    desc = re.search(r"(?m)^description:\s*([^\n]+)$", front)
+    if not name or name.group(1).strip() != skill.parent.name:
+        errors.append(f"{skill}: name must match directory")
+    if not desc or not desc.group(1).strip():
+        errors.append(f"{skill}: missing description")
+    if name and not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", name.group(1).strip()):
+        errors.append(f"{skill}: invalid name")
+
+for path in ROOT.rglob("*.md"):
+    text = path.read_text()
+    for target in re.findall(r"\[[^]]*\]\(([^)]+)\)", text):
+        if "://" in target or target.startswith("#") or "<" in target:
+            continue
+        clean = target.split("#", 1)[0]
+        if clean and not (path.parent / clean).resolve().exists():
+            errors.append(f"{path}: broken link {target}")
+
+data = (ROOT / "annotation/data.js").read_text()
+for group in re.findall(r'items\("([^"]+)",', data):
+    terms = group.split("|")
+    if len(terms) != len(set(terms)):
+        errors.append("duplicate candidate within annotation group")
+
+try:
+    import yaml  # type: ignore
+except ImportError:
+    yaml = None
+if yaml:
+    cases = yaml.safe_load((ROOT / "eval/cases.yaml").read_text())
+    if not 12 <= len(cases.get("cases", [])) <= 20:
+        errors.append("eval/cases.yaml should contain 12-20 cases")
+
+if errors:
+    print("validation failed:")
+    for error in errors:
+        print(f"- {error}")
+    sys.exit(1)
+print(f"ok: {len(skills)} skills; links and annotation candidates checked")

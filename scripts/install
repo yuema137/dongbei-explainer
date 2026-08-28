@@ -1,0 +1,32 @@
+#!/bin/sh
+set -eu
+
+usage() { echo "usage: scripts/install <codex|claude-code> [--scope project|user] [--copy] [--dest PATH]"; }
+[ "$#" -ge 1 ] || { usage; exit 2; }
+host=$1; shift
+scope=project; mode=link; dest=""
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --scope) scope=$2; shift 2 ;;
+    --copy) mode=copy; shift ;;
+    --dest) dest=$2; shift 2 ;;
+    *) usage; exit 2 ;;
+  esac
+done
+repo_dir=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
+if [ -z "$dest" ]; then
+  case "$host:$scope" in
+    codex:project) dest="$repo_dir/.agents/skills" ;;
+    codex:user) dest="${CODEX_SKILLS_HOME:-$HOME/.agents/skills}" ;;
+    claude-code:project) dest="$repo_dir/.claude/skills" ;;
+    claude-code:user) dest="${CLAUDE_SKILLS_HOME:-$HOME/.claude/skills}" ;;
+    *) usage; exit 2 ;;
+  esac
+fi
+mkdir -p "$dest"
+for source in "$repo_dir"/skills/*; do
+  name=$(basename "$source"); target="$dest/$name"
+  if [ -e "$target" ] || [ -L "$target" ]; then echo "refusing to overwrite $target" >&2; exit 1; fi
+  if [ "$mode" = copy ]; then cp -R "$source" "$target"; else ln -s "$source" "$target"; fi
+  echo "installed $name -> $target"
+done

@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+"""Warn about likely dialect cosplay; warnings require human judgment."""
+import re
+import sys
+from pathlib import Path
+
+BANNED = ["老铁", "嘎嘎", "咱就是说", "你寻思", "嘎哈", "咋地", "老鼻子", "扯犊子", "山炮"]
+MARKED = ["这玩意儿", "咋", "啥", "整", "搁这儿", "说白了"]
+text = Path(sys.argv[1]).read_text() if len(sys.argv) > 1 else sys.stdin.read()
+failed = False
+for term in BANNED:
+    if term in text:
+        print(f"error: excluded expression: {term}"); failed = True
+count = sum(len(re.findall(re.escape(term), text)) for term in MARKED)
+sentences = max(1, len(re.findall(r"[。！？!?]", text)))
+if count >= 4 and count / sentences > 0.35:
+    print(f"warning: marked-expression density {count}/{sentences} sentences; review for performance")
+sys.exit(1 if failed else 0)

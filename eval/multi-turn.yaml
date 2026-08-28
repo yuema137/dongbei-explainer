@@ -1,0 +1,38 @@
+version: 1
+conversations:
+  - id: worktree-reuse
+    turns:
+      - user: worktree 和 branch 到底啥区别？
+        expect: explain worktree once
+      - user: 那我开三个并行 agent 应该咋放？
+        expect: reuse worktree directly; explain isolation/layout, not Git basics
+  - id: kv-cache-reuse
+    turns:
+      - user: KV cache 到底缓存的是啥？
+        expect: explain past key/value tensors once
+      - user: 那为什么 context 越长显存越来越大？
+        expect: build on KV cache; do not restart definition
+  - id: rebase-depth-shift
+    turns:
+      - user: rebase 是干啥的？
+        expect: short mechanism and hash change
+      - user: 我知道 rebase；具体说说为什么 hash 会变。
+        expect: explain commit object identity; do not explain Git or rebase again
+  - id: gpu-known-term
+    turns:
+      - user: GPU utilization 和显存占用不是一回事吧？
+        expect: distinguish activity and capacity without defining GPU
+      - user: DataLoader 卡住时图上会长啥样？
+        expect: trace timeline and measurement caveat
+  - id: offset-reminder
+    turns:
+      - user: Poisson regression offset 是啥？
+        expect: explain exposure and equation
+      - user: 换成按人口算事故率呢？
+        expect: reuse offset; a tiny reminder is acceptable, full definition is not
+  - id: expert-escalation
+    turns:
+      - user: 用一分钟说清 event loop。
+        expect: level 1 with blocking caveat
+      - user: 我做 runtime 的，讲 ready queue 和 wakeup 路径。
+        expect: shift to expert control flow without beginner repetition

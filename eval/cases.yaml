@@ -1,0 +1,131 @@
+version: 1
+default_audience: technically literate cross-domain science and engineering reader
+cases:
+  - id: git-branch-worktree
+    domain: software
+    prompt: worktree 和 branch 到底啥区别？
+    audience: software developer familiar with Git basics
+    must: [branch is a movable commit reference, worktree is a checked-out working directory, one repo can have multiple worktrees]
+    misconceptions: [a worktree is another branch, a branch can normally be checked out in many worktrees]
+    preserve: [repository metadata sharing and checked-out state are distinct]
+    explain_terms: [worktree]
+  - id: merge-rebase
+    domain: software
+    prompt: merge 和 rebase 到底改了啥？
+    audience: developer who knows commits
+    must: [merge adds a join commit when needed, rebase recreates commits on a new base, hashes change]
+    misconceptions: [rebase moves existing commits without recreating them]
+    preserve: [shared-history risk]
+    explain_terms: [rebase]
+  - id: dependency-inversion
+    domain: software
+    prompt: dependency inversion 为啥不是“多加一层”这么简单？
+    audience: application developer
+    must: [dependency direction, policy owns abstraction, implementations conform]
+    misconceptions: [dependency injection and dependency inversion are identical]
+    preserve: [interfaces and adapters still cost maintenance]
+    explain_terms: [dependency inversion]
+  - id: process-thread
+    domain: systems
+    prompt: process 和 thread 的边界在哪？
+    audience: programmer new to OS internals
+    must: [address-space/resource ownership, schedulable execution, sharing and isolation]
+    misconceptions: [threads are simply lightweight processes in every respect]
+    preserve: [OS-specific details vary]
+    explain_terms: [address space, scheduler]
+  - id: event-loop
+    domain: systems
+    prompt: async 和 event loop 实际怎么配合？
+    audience: programmer
+    must: [task yields on wait, loop runs ready work, blocking code stalls the loop]
+    misconceptions: [async automatically runs CPU work in parallel]
+    preserve: [runtime-specific scheduling]
+    explain_terms: [event loop]
+  - id: image-container
+    domain: software
+    prompt: Docker image 和 container 到底谁是模板谁是进程？
+    audience: developer
+    must: [image is immutable content/config, container is runtime instance plus writable state and processes]
+    misconceptions: [container equals one process in all configurations]
+    preserve: [namespaces/cgroups are relevant at deeper levels]
+    explain_terms: [image, container]
+  - id: cache-invalidation
+    domain: systems
+    prompt: cache invalidation 难在哪？
+    audience: backend engineer
+    must: [source changes, stale copies, timing/order and ownership]
+    misconceptions: [TTL guarantees freshness]
+    preserve: [consistency-latency-cost trade-off]
+    explain_terms: [TTL]
+  - id: gpu-memory-utilization
+    domain: ml-systems
+    prompt: 显存满了，GPU utilization 为啥还能只有 20%？
+    audience: ML practitioner
+    must: [capacity vs activity, allocated tensors can sit idle, input/CPU/synchronization bottlenecks]
+    misconceptions: [full VRAM means full compute use]
+    preserve: [measurement window matters]
+    explain_terms: [utilization]
+  - id: gradient-accumulation
+    domain: ml
+    prompt: gradient accumulation 攒的到底是什么？
+    audience: ML practitioner
+    must: [gradients accumulate across microbatches, optimizer step is delayed, effective batch]
+    misconceptions: [activations from all microbatches must remain resident]
+    preserve: [optimizer equivalence depends on loss scaling and stateful layers]
+    explain_terms: [gradient accumulation, optimizer step]
+  - id: kv-cache
+    domain: ml-systems
+    prompt: KV cache 缓存的到底是什么，代价呢？
+    audience: technical LLM user
+    must: [past key/value tensors, autoregressive reuse, memory grows with context and layers]
+    misconceptions: [it caches generated answers, it removes all attention scaling]
+    preserve: [prefill and decode differ]
+    explain_terms: [KV cache, prefill, decode]
+  - id: quantization
+    domain: ml
+    prompt: quantization 是压文件，还是改计算？
+    audience: cross-domain engineer
+    must: [lower-precision representation, memory/bandwidth/compute effects, scale and zero-point where relevant]
+    misconceptions: [smaller model always runs faster, accuracy loss is uniform]
+    preserve: [hardware/kernel support]
+    explain_terms: [quantization]
+  - id: loss-metric
+    domain: ml
+    prompt: training loss 和 evaluation metric 为啥能一个降一个不动？
+    audience: ML practitioner
+    must: [optimized surrogate vs reported goal, aggregation and data split]
+    misconceptions: [lower training loss guarantees task improvement]
+    preserve: [overfitting and metric mismatch are separate]
+    explain_terms: [surrogate]
+  - id: confidence-interval
+    domain: statistics
+    prompt: 95% confidence interval 到底在说啥？
+    audience: scientist outside statistics
+    must: [repeated-sampling procedure coverage, realized interval, model assumptions]
+    misconceptions: [95% probability the fixed parameter lies in this frequentist interval]
+    preserve: [method and sampling assumptions]
+    explain_terms: [coverage]
+  - id: p-value
+    domain: statistics
+    prompt: p-value 小到底说明了啥，没说明啥？
+    audience: scientist
+    must: [probability of data at least as extreme under null/model, not probability null is true]
+    misconceptions: [effect is large or practically important]
+    preserve: [test statistic and stopping/design matter]
+    explain_terms: [null hypothesis]
+  - id: regularization
+    domain: math-ml
+    prompt: regularization 是怎么限制模型的？
+    audience: engineer with basic ML
+    must: [objective or hypothesis constraint, fit-complexity trade-off, L1/L2 differ]
+    misconceptions: [regularization simply prevents overfitting]
+    preserve: [bias and tuning cost]
+    explain_terms: [regularization]
+  - id: poisson-offset
+    domain: statistics
+    prompt: Poisson regression 的 offset 为啥系数固定成 1？
+    audience: technical researcher outside statistics
+    must: [exposure, log link equation, rate interpretation, fixed coefficient]
+    misconceptions: [offset is an ordinary fitted covariate]
+    preserve: [does not fix overdispersion or confounding]
+    explain_terms: [Poisson regression offset, exposure, overdispersion]
