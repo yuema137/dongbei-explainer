@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+/* Convert a complete card export into canonical, reviewable references. */
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
+
+if (process.argv.length !== 3) {
+  console.error("usage: scripts/import_annotations PATH_TO_EXPORTED_JSON");
+  process.exit(2);
+}
+const root = path.resolve(__dirname, "..");
+const sandbox = { window: {} };
+vm.runInNewContext(fs.readFileSync(path.join(root, "annotation/data.js"), "utf8"), sandbox);
+const source = sandbox.window.annotationData;
+const input = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+if (input.schema_version !== 1 || input.dataset_version !== source.version) {
+  throw new Error(`version mismatch: expected ${source.version}`);
+}
+
+const labels = {};
+for (const deck of ["dongbei", "terms"]) {
+  labels[deck] = {};
+  for (const item of source[deck]) {
+    const answer = input[deck]?.[item.id];
+    if (!answer?.label) throw new Error(`missing answer: ${deck}/${item.id} (${item.term})`);
+    (labels[deck][answer.label] ??= []).push(item.term);
+  }
+  if (Object.keys(input[deck]).length !== source[deck].length) throw new Error(`unexpected answer count in ${deck}`);
+}
+const bullets = values => values.map(x => `\`${x}\``).join("、");
+const dongbei = `# 普通话用户表达边界\n\n数据集版本：\`${source.version}\`。由产品负责人完成 ${source.dongbei.length}/${source.dongbei.length} 张 card 的初始标注。这里测的是普通话用户能否直接理解及技术解释中的可用性，不测方言纯度。\n\n标签不是机械生成规则。即使“直接可用”，仍需服从准确、尊重、语境和低密度原则；命令式、否定式或情绪较强的表达不能随便套在严肃场景。\n\n## 直接可用\n\n${bullets(labels.dongbei.direct || [])}\n\n## 能懂但有地域标记\n\n低频使用；若它只增加表演感而不增加节奏或重点，改用普通话。\n\n${bullets(labels.dongbei.marked || [])}\n\n## 不确定或偏地方\n\n${bullets(labels.dongbei.local || [])}\n\n## 排除\n\n普通话目标用户不应被迫解码，或表达有明显表演、冒犯、含混风险。\n\n${bullets(labels.dongbei.exclude || [])}\n`;
+const terms = `# Common technical jargon\n\nDataset version: \`${source.version}\`. The product owner labeled ${source.terms.length}/${source.terms.length} candidate terms for a technically literate, cross-domain Mandarin audience. Preserve every term in English. These are conversation defaults, not claims about every individual reader.\n\n## Tier 1 — use directly\n\nDo not explain these merely because they first appear. Explain the relevant mechanism when the question requires it.\n\n${bullets(labels.terms.tier1 || [])}\n\n## Tier 2 — explain briefly on first meaningful use\n\nAttach one short explanation when the current reasoning first depends on the term, then reuse the English term without repeating the definition.\n\n${bullets(labels.terms.tier2 || [])}\n`;
+const normalized = {
+  schema_version: 1,
+  dataset_version: input.dataset_version,
+  exported_at: input.exported_at,
+  imported_at: new Date().toISOString(),
+  labels,
+  annotations: Object.fromEntries(["dongbei", "terms"].map(deck => [deck, source[deck].map(item => ({
+    id: item.id,
+    term: item.term,
+    label: input[deck][item.id].label,
+    ...(input[deck][item.id].note ? { note: input[deck][item.id].note } : {})
+  }))]))
+};
+const outputs = [
+  ["skills/dongbei-voice/references/expression-boundaries.md", dongbei],
+  ["skills/plain-chinese/references/common-technical-jargon.md", terms],
+  [`eval/annotations/${source.version}.json`, JSON.stringify(normalized, null, 2) + "\n"]
+];
+for (const [relative, content] of outputs) {
+  const destination = path.join(root, relative);
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  fs.writeFileSync(destination, content);
+  console.log(`wrote ${relative}`);
+}
+console.log(`dongbei: ${Object.entries(labels.dongbei).map(([k,v]) => `${k}=${v.length}`).join(", ")}`);
+console.log(`terms: ${Object.entries(labels.terms).map(([k,v]) => `${k}=${v.length}`).join(", ")}`);

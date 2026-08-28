@@ -9,7 +9,11 @@ This pass was a structured self-review of the curated variants, not a blinded mo
 3. **Graphs beat forced analogies.** A merge/rebase train analogy obscured that rebased commits are new objects. The example layer now prefers a commit graph.
 4. **Plain language supplies most of the gain.** Across all four comparisons, variant B removes the main comprehension barrier. Voice mainly adds pacing and salience. Skills remain separate for this reason.
 5. **Expert depth needs early formal detail.** The first offset draft delayed the equation too long. Level 3–4 guidance now treats conversation as an entrance, not a replacement.
-6. **Terminology and mechanism are separate.** GPU is Tier 0, yet its utilization mechanism still needs explanation. Multi-turn cases explicitly test that distinction.
+6. **Terminology and mechanism are separate.** GPU is Tier 1, yet its utilization mechanism still needs explanation. Multi-turn cases explicitly test that distinction.
+
+## Product-owner boundary round
+
+The complete `2026-08-28.1` card round replaced provisional vocabulary judgments with an explicit Mandarin-user boundary. In particular, `worktree`, `rebase`, and `KV cache` became Tier 1 while `event loop`, `dependency inversion`, and `gradient accumulation` became Tier 2. Several expressions initially hard-excluded by research caution moved to the “understandable but regionally marked” group. See [`research/human-calibration-notes.md`](../research/human-calibration-notes.md).
 
 ## Open questions
 

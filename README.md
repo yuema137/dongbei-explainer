@@ -66,7 +66,7 @@ Use `--copy` when symlinks are undesirable, or `--dest PATH` if current host doc
 
 Established terms stay in English. Tier 1 terms are used directly; Tier 2 terms get one short explanation on first meaningful use; specialist terms get only the detail needed for the current argument. A term already explained in the conversation is reused without another parenthetical lesson.
 
-These boundaries need product-owner judgment. The no-dependency [card annotation UI](annotation/index.html) contains a large candidate pool for both English terminology and Dongbei expressions. Open it directly; each choice advances to the next card, progress is saved locally, and the finished labels can be exported as JSON. The pools are deliberately broader than the recommended vocabulary and are not themselves policy.
+The first product-owner calibration is complete: 164/164 expressions and 223/223 English terms were labeled. The generated [expression boundary](skills/dongbei-voice/references/expression-boundaries.md) and [technical jargon tiers](skills/plain-chinese/references/common-technical-jargon.md) are now canonical defaults. The no-dependency [card annotation UI](annotation/index.html) remains available for later rounds; each choice advances automatically and exports versioned JSON.
 
 ## Language research
 

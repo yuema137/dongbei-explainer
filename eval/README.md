@@ -10,3 +10,5 @@ The suite is behavioral, not string-matched. For each answer:
 4. Run `scripts/lint_text` on generated samples as a warning-only dialect check.
 
 Cross-host runs should use the same canonical skill bytes and input. Codex and Claude Code need not produce identical wording. This repository does not claim live cross-host model results until those runs are actually performed.
+
+Human boundary exports normalized by `scripts/import_annotations` live under `annotations/`. They are versioned calibration inputs; generated skill references must stay traceable to the dataset version.

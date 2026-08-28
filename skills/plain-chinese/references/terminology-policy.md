@@ -13,11 +13,11 @@ Knowing `GPU` does not imply knowing why VRAM can be full at 20% utilization. Ex
 
 ## Familiarity tiers
 
-- Tier 1 — shared vocabulary: use directly. Provisional defaults include `LLM`, `agent`, `code`, `repo`, `bug`, `Git`, `GPU`, `CPU`, `model`, and `dataset`. Context can move a term between tiers.
-- Tier 2 — broad but not universal: give one short, natural first-use explanation when it matters. Provisional examples: `worktree`, `rebase`, `CI`, `event loop`, `gradient accumulation`, `quantization`, `KV cache`, `regularization`.
+- Tier 1 — shared vocabulary: use directly. Do not explain it merely because it first appears.
+- Tier 2 — broad but not universal: give one short, natural first-use explanation when it matters.
 - Specialist — domain-specific: explain only the amount needed for the current argument, possibly with formal detail. Examples include `Poisson regression offset`, memory ordering, or measure-theoretic terms.
 
-These assignments are provisional until human calibration. The candidate deck in [`annotation/`](../../../annotation/README.md) lets readers label a large pool; it is a decision aid, not an authoritative dictionary.
+Concrete assignments come from the product-owner calibration in [common-technical-jargon.md](common-technical-jargon.md). Context can still override a default when the user signals familiarity or confusion. The candidate deck in [`annotation/`](../../../annotation/README.md) remains the editable source for later rounds.
 
 ## First meaningful use
 

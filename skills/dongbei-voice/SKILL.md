@@ -12,8 +12,8 @@ Work only after the technical content is sound. Do not add, remove, or soften te
 
 Useful moves include “先看它到底干了啥”, “原来…现在…”, “为啥”, “真正卡住的是…”, and occasional “说白了”. Vary naturally; they are not required catchphrases. Use `咋`, `啥`, or `整` sparingly, and never use `整` where a precise verb such as “复制、调度、缓存、提交” is clearer.
 
-Avoid phonetic misspellings, comedy, fake relatives, `老铁`, `嘎嘎`, `咱就是说`, `你寻思`, `嘎哈`, obscure local words, dialect in every sentence, and any phrasing that talks down to the reader.
+Avoid phonetic misspellings, comedy, fake relatives, `老铁`, `嘎嘎`, `嘎哈`, expressions marked “排除” in the calibrated boundary, dialect in every sentence, and any phrasing that talks down to the reader. Expressions marked “能懂但有地域标记”, including `咱就是说` and `你寻思`, are not default choices: use them only when they add real discourse value without creating performance.
 
-For evidence, expression tiers, and serious-context restrictions, read [references/dialect-guide.md](references/dialect-guide.md). For explicit rejections, read [references/excluded-expressions.md](references/excluded-expressions.md).
+For the product owner's calibrated expression boundary, read [references/expression-boundaries.md](references/expression-boundaries.md). For evidence and serious-context restrictions, read [references/dialect-guide.md](references/dialect-guide.md). For explicit rejections, read [references/excluded-expressions.md](references/excluded-expressions.md).
 
 Final check: could a technically curious Mandarin speaker outside Northeast China read it immediately? If not, replace the dialect marker with Standard Mandarin.
