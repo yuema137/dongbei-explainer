@@ -1,19 +1,31 @@
 #!/bin/sh
 set -eu
 
-usage() { echo "usage: scripts/install <codex|claude-code> [--scope project|user] [--copy] [--dest PATH]"; }
+usage() { echo "usage: scripts/install <codex|claude-code> [--scope project|user] [--project PATH] [--copy] [--dest PATH]"; }
 [ "$#" -ge 1 ] || { usage; exit 2; }
 host=$1; shift
-scope=project; mode=link; dest=""
+scope=project; mode=link; dest=""; project=""
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --scope) scope=$2; shift 2 ;;
+    --project) project=$2; shift 2 ;;
     --copy) mode=copy; shift ;;
     --dest) dest=$2; shift 2 ;;
     *) usage; exit 2 ;;
   esac
 done
 repo_dir=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
+if [ -n "$project" ]; then
+  [ "$scope" = project ] || { echo "--project cannot be combined with --scope user" >&2; exit 2; }
+  [ -z "$dest" ] || { echo "use either --project or --dest, not both" >&2; exit 2; }
+  [ -d "$project" ] || { echo "project directory does not exist: $project" >&2; exit 2; }
+  project=$(CDPATH= cd -- "$project" && pwd)
+  case "$host" in
+    codex) dest="$project/.agents/skills" ;;
+    claude-code) dest="$project/.claude/skills" ;;
+    *) usage; exit 2 ;;
+  esac
+fi
 if [ -z "$dest" ]; then
   case "$host:$scope" in
     codex:project) dest="$repo_dir/.agents/skills" ;;

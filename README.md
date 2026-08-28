@@ -26,17 +26,63 @@
 
 ## 最快开始
 
-### 在 Codex 或其他 coding agent 里
+### 已经开着一个 Codex 或 Claude Code 会话
 
-克隆仓库后，在项目根目录运行：
+假设：
+
+- `dongbei-explainer` 在 `/path/to/dongbei-explainer`；
+- 你正在处理的项目在 `/path/to/your-project`；
+- Codex 或 Claude Code 会话也是从 `/path/to/your-project` 打开的。
+
+另开一个终端，把 skills 装进**你正在处理的项目**：
 
 ```bash
-# Codex：安装到当前项目
-scripts/install codex
+# 当前会话是 Codex
+/path/to/dongbei-explainer/scripts/install codex --project /path/to/your-project
 
-# Claude Code：安装到当前项目
-scripts/install claude-code
+# 当前会话是 Claude Code
+/path/to/dongbei-explainer/scripts/install claude-code --project /path/to/your-project
 ```
+
+默认用软链接安装，所以你更新 `dongbei-explainer` 后，不用重复复制文件。
+
+然后在会话里明确调用：
+
+```text
+# Codex
+$dongbei-explainer 解释这个 issue。面向一般 STEM 读者，先讲问题怎么发生。
+
+# Claude Code
+/dongbei-explainer 解释这个 issue。面向一般 STEM 读者，先讲问题怎么发生。
+```
+
+Claude Code 会监看启动时已经存在的 skill 目录；如果 `.claude/skills/` 是刚才才第一次创建的，重启一次 Claude Code，再输入 `/dongbei-explainer`。这是 Claude Code [官方文档说明的加载边界](https://code.claude.com/docs/en/slash-commands#where-skills-live)。
+
+Codex 是否会在一个已经运行的会话中立刻刷新刚装进项目的 skill，目前没有可核实的官方保证。先试 `$dongbei-explainer`；如果当前会话没有识别它，就在同一项目中新开一个 Codex 会话。这是最稳妥的做法。
+
+如果你现在就要用、不想重启，也可以直接让当前 agent 读取 canonical skill：
+
+```text
+请读取并使用
+/path/to/dongbei-explainer/skills/dongbei-explainer/SKILL.md，
+以及它要求组合的四个 sibling skills，然后解释下面的问题：……
+```
+
+这相当于本次会话手动加载；不会把 skill 永久安装到宿主里。
+
+### 给另一个项目安装
+
+在 `dongbei-explainer` 仓库里运行，并明确指出要在哪个项目里使用：
+
+```bash
+# Codex：安装到目标项目
+scripts/install codex --project /path/to/your-project
+
+# Claude Code：安装到目标项目
+scripts/install claude-code --project /path/to/your-project
+```
+
+不加 `--project` 时，脚本会装到 `dongbei-explainer` 自己的项目级发现目录，主要用于开发和验证这些 skills。
 
 个人级安装，加 `--scope user`：
 
@@ -45,7 +91,7 @@ scripts/install codex --scope user
 scripts/install claude-code --scope user
 ```
 
-然后直接说：
+安装完成后，重新打开或新建 coding-agent 会话，然后直接说：
 
 ```text
 用 dongbei-explainer 给我解释这个 issue。假设我有一般 STEM 背景，
