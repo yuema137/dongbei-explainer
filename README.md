@@ -51,19 +51,19 @@
 
 默认用软链接安装，所以你更新 `dongbei-explainer` 后，不用重复复制文件。
 
-然后在会话里明确调用：
+安装以后，回到 Codex 或 Claude Code 的**聊天输入框**，直接发一句自然语言就行：
 
 ```text
-# Codex
-$dongbei-explainer 解释这个 issue。面向一般 STEM 读者，先讲问题怎么发生。
-
-# Claude Code
-/dongbei-explainer 解释这个 issue。面向一般 STEM 读者，先讲问题怎么发生。
+用 dongbei-explainer 解释这个 issue。面向一般 STEM 读者，先讲问题怎么发生。
 ```
 
-Claude Code 会监看启动时已经存在的 skill 目录；如果 `.claude/skills/` 是刚才才第一次创建的，重启一次 Claude Code，再输入 `/dongbei-explainer`。这是 Claude Code [官方文档说明的加载边界](https://code.claude.com/docs/en/slash-commands#where-skills-live)。
+这句话不是 CLI 命令，不需要在终端里运行。平时也可以更随意地说“用东北大白话给我讲讲这个 PR”。只要请求和 skill 的 description 对得上，agent 就应该自动加载它。
 
-Codex 是否会在一个已经运行的会话中立刻刷新刚装进项目的 skill，目前没有可核实的官方保证。先试 `$dongbei-explainer`；如果当前会话没有识别它，就在同一项目中新开一个 Codex 会话。这是最稳妥的做法。
+如果自动识别没有生效，再在**聊天输入框**里显式指定。Codex 输入 `$dongbei-explainer 解释这个 issue`，Claude Code 输入 `/dongbei-explainer 解释这个 issue`。这两个前缀只是可选的强制调用方式，不是每次都要写。
+
+Claude Code 会监看启动时已经存在的 skill 目录；如果 `.claude/skills/` 是刚才才第一次创建的，重启一次 Claude Code，再回到聊天输入框使用它。这是 Claude Code [官方文档说明的加载边界](https://code.claude.com/docs/en/slash-commands#where-skills-live)。
+
+Codex 是否会在一个已经运行的会话中立刻刷新刚装进项目的 skill，目前没有可核实的官方保证。先在聊天输入框里正常使用；如果当前会话没有识别它，就在同一项目中新开一个 Codex 会话。这是最稳妥的做法。
 
 如果你现在就要用、不想重启，也可以直接让当前 agent 读取 canonical skill：
 
@@ -89,7 +89,7 @@ scripts/install claude-code --project /path/to/your-project
 
 不加 `--project` 时，脚本会装到 `dongbei-explainer` 自己的项目级发现目录，主要用于开发和验证这些 skills。
 
-个人级安装，加 `--scope user`：
+不想给每个项目装一遍，可以做一次个人级安装：
 
 ```bash
 scripts/install codex --scope user
