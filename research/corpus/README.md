@@ -19,3 +19,6 @@
 
 - [《钟点工》口语结构笔记](zhongdian-gong-notes.md)
 - [《昨天今天明天》口语结构笔记](zuotian-jintian-mingtian-notes.md)
+- [《卖拐》说话风格笔记](mai-guai-notes.md)
+- [《火炬手》说话风格笔记](huo-ju-shou-notes.md)
+- [《说事儿》说话风格笔记](shuo-shi-er-notes.md)
