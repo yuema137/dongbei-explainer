@@ -230,7 +230,7 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 
 ## 目前研究到哪儿了
 
-目前看，真正管用的多半不是那些特别地方的词，而是把动作说出来、把状态说具体、用短问短答带着人往下走。研究记录都在 [research/dongbei-language-notes.md](research/dongbei-language-notes.md)。
+目前看，真正管用的多半不是那些特别地方的词，而是把动作说出来、把状态说具体、用短问短答带着人往下走。语言研究在 [research/dongbei-language-notes.md](research/dongbei-language-notes.md)，小品和访谈只提炼结构，不转载全文，也不能改掉人工标过的词汇边界。语料笔记放在 [research/corpus/](research/corpus/README.md)。
 
 还是那句话，咱没证明东北话能提高 LLM reasoning。现在能说的只有：
 
