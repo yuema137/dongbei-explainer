@@ -5,7 +5,14 @@ import sys
 from pathlib import Path
 
 BANNED = ["老铁", "嘎嘎", "咱就是说", "你寻思", "嘎哈", "咋地", "老鼻子", "扯犊子", "山炮"]
-MARKED = ["这玩意儿", "咋", "啥", "整", "搁这儿", "说白了"]
+MARKED_PATTERNS = [
+    r"这玩意儿",
+    r"咋",
+    r"啥",
+    r"(?:咋整|怎么整|整明白|没整明白|别整|整完|整成|整得|整一下|整这|整那|整啥|整什么|全整)",
+    r"搁这儿",
+    r"说白了",
+]
 text = Path(sys.argv[1]).read_text() if len(sys.argv) > 1 else sys.stdin.read()
 failed = False
 for term in BANNED:
@@ -14,7 +21,7 @@ for term in BANNED:
 if "——" in text:
     print("error: Chinese em dash makes spoken explanation read like edited prose")
     failed = True
-count = sum(len(re.findall(re.escape(term), text)) for term in MARKED)
+count = sum(len(re.findall(pattern, text)) for pattern in MARKED_PATTERNS)
 sentences = max(1, len(re.findall(r"[。！？!?]", text)))
 if count >= 4 and count / sentences > 0.35:
     print(f"warning: marked-expression density {count}/{sentences} sentences; review for performance")
