@@ -20,6 +20,8 @@ Avoid Chinese em dashes (`——`). They make the answer read like edited prose 
 
 Avoid phonetic misspellings, comedy, fake relatives, `老铁`, `嘎嘎`, `嘎哈`, expressions marked “排除” in the calibrated boundary, dialect in every sentence, and any phrasing that talks down to the reader. Expressions marked “能懂但有地域标记”, including `咱就是说` and `你寻思`, are not default choices: use them only when they add real discourse value without creating performance.
 
-For the product owner's calibrated expression boundary, read [references/expression-boundaries.md](references/expression-boundaries.md). For evidence and serious-context restrictions, read [references/dialect-guide.md](references/dialect-guide.md). For explicit rejections, read [references/excluded-expressions.md](references/excluded-expressions.md).
+Treat comedy, interview, and other performance corpora as evidence about discourse structure only. Frequency in a corpus never promotes an expression. The product owner's calibrated boundary remains authoritative, including when a source repeatedly uses a prohibited, risky, insulting, or pronunciation-marked form.
+
+For the product owner's calibrated expression boundary, read [references/expression-boundaries.md](references/expression-boundaries.md). For evidence and serious-context restrictions, read [references/dialect-guide.md](references/dialect-guide.md). For explicit rejections, read [references/excluded-expressions.md](references/excluded-expressions.md). When using performance-derived rhythm, consult the distilled [corpus notes](../../research/corpus/README.md) without loading or imitating source transcripts.
 
 Final check: could a technically curious Mandarin speaker outside Northeast China read it immediately? If not, replace the dialect marker with Standard Mandarin.
