@@ -4,13 +4,17 @@
 
 # dongbei-explainer
 
-> **东北话不是目的。讲明白才是目的。**
+> **别管名字多唬人，先看它到底干了啥。**
 
-`dongbei-explainer` 是一组可组合的 Agent Skills，用自然、具体、带一点东北口语节奏的中文解释技术问题。这里有两个同样重要的词：**东北话**负责把语气拉得直接、有人味；**大白话**负责让普通 STEM 读者不用先学一套书面黑话，就能跟上事情到底怎么发生。
+AI 讲技术经常有个毛病：每个词单拿出来你都认识，连一块儿就不知道它到底说了啥。定义背了一串，事情是怎么发生的，一步也没给你捋。
 
-我们在实际使用 AI 的过程中反复观察到：当你要求它“用东北大白话讲”，回答往往会少绕一点，少堆几层抽象名词，更愿意直接说清楚“谁干了啥、原来咋干、现在改了哪一步”。
+我们平时用 AI 时发现，跟它说一句“用东北大白话讲”，回答往往一下就顺溜了。它不那么爱堆抽象名词了，开始老老实实告诉你谁干了啥，原来咋走，现在又改了哪一步。
 
-这不是经过验证的语言学定律，也不是说东北话能提高模型推理能力。它是一个值得测试的实践假设。这个项目把其中真正有用的沟通习惯拆出来，做成可以复用、组合和校准的 skills：
+这招既然好使，就不能每次全靠临时提醒。`dongbei-explainer` 把这套讲法拆成几份能组合的 Agent Skills。里面既有怎么把技术机制捋清楚，也有怎么说得像大白话，最后才是那一点东北口语节奏。
+
+## 这个 skill 能干啥
+
+主要就管这些事：
 
 - 别一上来扔定义，先说这东西到底干啥；
 - 别堆名词，把参与者和动作说出来；
@@ -21,25 +25,27 @@
 - 不用中文破折号往一句话中间硬塞补充说明，拆成真人会说的短句；
 - 说清它解决了啥，也说清它没解决啥。
 
-目标读者是有一般 STEM 背景的人：能跟技术推理，但不一定学过计算机，也不需要熟悉正在解释的项目。
+默认读者有一般 STEM 背景，技术推理能跟上，但不一定学过计算机，更不该被要求先熟悉眼前这个项目。
 
-## 这不是什么
+## 这个 skill 不能干啥
 
-这不是东北方言表演包，也不是把每句话塞进“老铁、嘎嘎、咱就是说”。项目明确排除喜剧腔、强行模仿口音、晦涩地方词、装熟和居高临下。
+不是每句话多塞几个“老铁、嘎嘎、咱就是说”，就叫东北大白话。那叫演，而且还耽误理解。晦涩地方词、硬学口音、假装跟读者很熟，这些都不要。
 
-输出应该首先是准确、好懂的技术解释。东北口语只负责把节奏拉得更直接、更像一个靠谱的人坐旁边跟你捋明白。
+咱要的是一个懂技术的人坐你旁边，把事情从头到尾捋明白。该留的英文术语得留，该上的公式照样上。哪句话用了东北表达反而更费解，马上换回普通话。
 
-## 最快开始
+还有一件事得说明白。目前没有证据证明“东北话能提高模型推理能力”。我们只有一个从实际使用里来的观察：这种说话方式经常能把模型往直接、具体的解释上拽。这个项目就是把它做成一套能复用、能测试、也能随时改的办法。
 
-### 已经开着一个 Codex 或 Claude Code 会话
+## 已经有项目了，咋装
 
-假设：
+### Codex 或 Claude Code 会话已经开着了
+
+先对一下路径：
 
 - `dongbei-explainer` 在 `/path/to/dongbei-explainer`；
 - 你正在处理的项目在 `/path/to/your-project`；
 - Codex 或 Claude Code 会话也是从 `/path/to/your-project` 打开的。
 
-另开一个终端，把 skills 装进**你正在处理的项目**：
+另开一个终端，把 skills 装进**你正在处理的那个项目**：
 
 ```bash
 # 当前会话是 Codex
@@ -49,21 +55,21 @@
 /path/to/dongbei-explainer/scripts/install claude-code --project /path/to/your-project
 ```
 
-默认用软链接安装，所以你更新 `dongbei-explainer` 后，不用重复复制文件。
+默认装的是软链接。以后 `dongbei-explainer` 更新了，这边直接就能用，不用再复制一遍。
 
-安装以后，回到 Codex 或 Claude Code 的**聊天输入框**，直接发一句自然语言就行：
+装完回到 Codex 或 Claude Code 的**聊天输入框**，直接说人话就行：
 
 ```text
 用 dongbei-explainer 解释这个 issue。面向一般 STEM 读者，先讲问题怎么发生。
 ```
 
-这句话不是 CLI 命令，不需要在终端里运行。平时也可以更随意地说“用东北大白话给我讲讲这个 PR”。只要请求和 skill 的 description 对得上，agent 就应该自动加载它。
+注意，这句话是发在聊天框里的，不是 CLI 命令。平时说“用东北大白话给我讲讲这个 PR”也行。只要请求跟 skill 的 description 对得上，agent 自己就该把它加载进来。
 
-如果自动识别没有生效，再在**聊天输入框**里显式指定。Codex 输入 `$dongbei-explainer 解释这个 issue`，Claude Code 输入 `/dongbei-explainer 解释这个 issue`。这两个前缀只是可选的强制调用方式，不是每次都要写。
+要是它没认出来，再在**聊天输入框**里点名。Codex 输入 `$dongbei-explainer 解释这个 issue`，Claude Code 输入 `/dongbei-explainer 解释这个 issue`。这俩前缀是兜底用的，不是每回都得写。
 
 Claude Code 会监看启动时已经存在的 skill 目录；如果 `.claude/skills/` 是刚才才第一次创建的，重启一次 Claude Code，再回到聊天输入框使用它。这是 Claude Code [官方文档说明的加载边界](https://code.claude.com/docs/en/slash-commands#where-skills-live)。
 
-Codex 是否会在一个已经运行的会话中立刻刷新刚装进项目的 skill，目前没有可核实的官方保证。先在聊天输入框里正常使用；如果当前会话没有识别它，就在同一项目中新开一个 Codex 会话。这是最稳妥的做法。
+Codex 会不会在已经运行的会话里立刻刷出新装的 skill，目前没有能核实的官方说明。先在聊天框里试。没认出来，就从同一个项目新开一个 Codex 会话，这么整最稳。
 
 如果你现在就要用、不想重启，也可以直接让当前 agent 读取 canonical skill：
 
@@ -73,23 +79,11 @@ Codex 是否会在一个已经运行的会话中立刻刷新刚装进项目的 s
 以及它要求组合的四个 sibling skills，然后解释下面的问题：……
 ```
 
-这相当于本次会话手动加载；不会把 skill 永久安装到宿主里。
+这相当于只给眼前这个会话手动加载一次，不会永久安装。
 
-### 给另一个项目安装
+### 不想每个项目都装一遍
 
-在 `dongbei-explainer` 仓库里运行，并明确指出要在哪个项目里使用：
-
-```bash
-# Codex：安装到目标项目
-scripts/install codex --project /path/to/your-project
-
-# Claude Code：安装到目标项目
-scripts/install claude-code --project /path/to/your-project
-```
-
-不加 `--project` 时，脚本会装到 `dongbei-explainer` 自己的项目级发现目录，主要用于开发和验证这些 skills。
-
-不想给每个项目装一遍，可以做一次个人级安装：
+那就装到个人目录。往后新开项目也能用：
 
 ```bash
 scripts/install codex --scope user
@@ -117,9 +111,9 @@ scripts/install claude-code --scope user
 
 安装脚本只是把同一份 canonical skill 链接或复制到宿主的发现目录，不会维护 Codex 版和 Claude Code 版两套 prompt。项目遵循 [Agent Skills 开放规范](https://agentskills.io/specification)。Claude Code 当前的项目级发现目录是 `.claude/skills/`；路径与扩展能力见[官方文档](https://code.claude.com/docs/en/slash-commands#where-skills-live)。
 
-### 在支持 Skills 的网页聊天里
+## 网页聊天咋用
 
-如果网页产品支持上传或安装 Agent Skills，把 `skills/` 下需要的目录作为 skill bundle 添加进去，然后直接说：
+网页产品要是支持上传或安装 Agent Skills，把 `skills/` 下需要的目录加进去，然后直接问：
 
 ```text
 使用 dongbei-explainer 解释下面的问题，Level 2，面向一般 STEM 读者。
@@ -135,13 +129,13 @@ skills/dongbei-voice
 skills/dongbei-explainer
 ```
 
-如果网页聊天不支持 Skills，也不用折腾安装：把相关 `SKILL.md` 和它链接的 reference 文件作为附件上传，再提出问题即可。最小组合是 `clear-tech-explainer + plain-chinese`；需要完整风格时再加 `concrete-example + dongbei-voice`。
+网页聊天不支持 Skills 也没啥。把相关 `SKILL.md` 和它链接的 reference 文件当附件传上去，再提问题就行。只想讲清楚，装 `clear-tech-explainer + plain-chinese`。想要完整效果，再加 `concrete-example + dongbei-voice`。
 
 OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI Docs / ChatGPT use cases](https://learn.chatgpt.com/use-cases)。不同网页产品的上传入口会变化，所以这里不绑定某个按钮名称。
 
-### 不安装，临时用一次
+## 先不安装，试一把
 
-最简单的请求方式：
+把下面这段直接发给模型：
 
 ```text
 用清楚、自然、带一点东北口语节奏的中文解释下面的问题。
@@ -152,7 +146,7 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 不要喜剧化，不要堆东北词，也别把读者当笨蛋。
 ```
 
-这能临时使用，但完整 skill 的术语记忆、深度控制、反例和校准约束更稳定。
+临时这么用没问题。不过完整 skill 还管术语记忆、解释深度和反例，跑多轮对话会更稳。
 
 ## Demo 1：`asyncio.sleep(0)` 为啥没有立刻响应取消？
 
@@ -194,7 +188,7 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 
 这个 demo 保留了 issue 里的真实数字，也说明了比喻的边界：决定 OOM 的仍是具体 cgroup 层级和 kernel accounting，不是“房间”本身。
 
-## 五个可组合 Skills
+## 五个 skill，各管一摊
 
 | Skill | 负责什么 |
 |---|---|
@@ -204,11 +198,11 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 | `dongbei-voice` | 加入克制但能感知的东北口语节奏 |
 | `dongbei-explainer` | 按顺序组合上面四层 |
 
-语义和口吻刻意分开。你可以只要清楚，不要东北风格；也可以把 `dongbei-voice` 接到别的解释工作流上。详细架构见 [docs/architecture.md](docs/architecture.md)。
+为啥非得拆开？因为讲清楚和东北口吻不是一回事。你可以只让它把因果关系讲明白，一点东北味都不要；也可以把 `dongbei-voice` 接到别的解释流程上。非得揉成一个大 prompt，后面想调哪一层都费劲。具体怎么接的，见 [docs/architecture.md](docs/architecture.md)。
 
-## 术语怎么处理
+## 英文术语咋办
 
-这不是 jargon 翻译系统。
+不乱翻，也不逮着一个词就给人上课。
 
 - 标准英文术语保留英文；
 - Tier 1 直接使用，不做 AI 教师式重复定义；
@@ -216,33 +210,33 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 - 项目自己发明的英文长标签不自动算标准术语，先用中文说它负责什么；
 - 同一轮对话里已经解释过的词，不再从头讲一遍。
 
-第一轮人工标注覆盖 223 个英文术语和 164 条中文表达。正式结果见 [technical jargon tiers](skills/plain-chinese/references/common-technical-jargon.md) 和 [expression boundary](skills/dongbei-voice/references/expression-boundaries.md)。这些是可继续修订的产品默认值，不是全民词典。
+第一轮人工标了 223 个英文术语和 164 条中文表达。哪些词直接用，哪些词第一次得解释，结果都在 [technical jargon tiers](skills/plain-chinese/references/common-technical-jargon.md) 和 [expression boundary](skills/dongbei-voice/references/expression-boundaries.md)。这不是给全体普通话用户下定义。哪项标得不对，后面接着改。
 
-## 我们怎么校准
+## 咋知道它是真好使，不是自我感觉良好
 
-项目不是“写完 prompt，自己觉得不错，就算完成”。当前流程分两阶段：
+不能写完 prompt，自己读着挺美，就说完事了。现在分两轮测：
 
 1. **词汇边界**：标注哪些表达普通话用户能直接理解，哪些英文术语需要首次简释。
 2. **完整解释对照**：针对真实技术材料生成 baseline 和 full skill 两版，盲评 A/B，记录信息丢失、术语负担、口语自然度和具体修改意见。
 
-校准已经让设计发生过实际变化：
+前几轮还真测出了毛病：
 
-- `KV cache` 样例暴露了风格改写会漏掉剩余计算和显存代价，于是增加 information-preservation check；
-- merge/rebase 的火车类比遮住了 commit identity，于是改回 commit graph；
-- 第一轮真实 PR 对照把受众错设成 senior engineer，导致 `sidecar` 等项目黑话没人解释；现在默认受众已改为一般 STEM、可能无 CS 背景；
-- 同一轮还证明了“加两句说白了”不等于东北大白话，voice 现在必须重新组织解释，而不是做表面替词。
+- `KV cache` 那版说顺溜了，却把剩余计算和显存代价说没了。现在每次改写都得查一遍信息有没有丢；
+- merge/rebase 硬套火车比喻，反而把 commit identity 挡住了。后来干脆换回 commit graph；
+- 第一轮真实 PR 对照把读者当成 senior engineer，`sidecar` 这种项目黑话张嘴就来。现在默认读者是一般 STEM 背景，不要求懂 CS，更不要求熟悉项目；
+- 光加两句“说白了”根本没用。真正的东北大白话得把问题、动作和先后顺序重新捋一遍，不是给原文贴几个口头禅。
 
 评测材料和 rubric 在 [eval/](eval/README.md)，阶段二标注页在 [eval/phase2/](eval/phase2/README.md)。
 
-## 研究边界
+## 目前研究到哪儿了
 
-初步语言资料支持一个保守结论：真正有用的更可能是动作化、状态描写、短问答和明确语势，而不是堆地方词。研究记录见 [research/dongbei-language-notes.md](research/dongbei-language-notes.md)。
+目前看，真正管用的多半不是那些特别地方的词，而是把动作说出来、把状态说具体、用短问短答带着人往下走。研究记录都在 [research/dongbei-language-notes.md](research/dongbei-language-notes.md)。
 
-我们不声称“东北话已经被证明能提高 LLM reasoning”。更准确的说法是：
+还是那句话，咱没证明东北话能提高 LLM reasoning。现在能说的只有：
 
-> 实践中，这种表达方式看起来会把模型推向更直接、更具体的解释；这个项目把观察变成可复用、可拆分、可测试的 explanation protocol。
+> 实际用起来，这种说法经常能把模型从空话里拽出来，让它多讲具体动作和因果。到底能好多少，得接着测。
 
-## 验证与贡献
+## 怎么参与
 
 ```bash
 scripts/validate
@@ -250,6 +244,6 @@ scripts/validate_phase2 eval/phase2/bundles/<bundle>.json
 scripts/lint_text path/to/answer.md
 ```
 
-欢迎贡献普通话用户觉得自然或出戏的表达、面向一般 STEM 读者的真实案例、因简化而丢失的技术条件、更准确的类比，以及不同 agent runtime 的行为对照。
+哪句东北话让普通话用户看懵了，哪个类比把技术机制讲歪了，或者哪个回答看着顺却偷偷丢了条件，都欢迎提。真实 case 尤其有用。Codex、Claude Code 和其他 agent 跑出来不一样，也可以把对照结果交上来。
 
-贡献方式见 [CONTRIBUTING.md](CONTRIBUTING.md)。项目采用 [MIT License](LICENSE)。
+怎么交见 [CONTRIBUTING.md](CONTRIBUTING.md)。代码和 skills 用 [MIT License](LICENSE)。
