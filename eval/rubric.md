@@ -8,6 +8,7 @@ Rate each dimension 0–2. Record evidence, not just a number.
 | Causal clarity | labels only | partial mechanism | reader can state why and what changes |
 | Concrete understanding | no trace | example exists but skips a step | one item can be traced end to end |
 | Jargon burden | unexplained or overdefined | uneven | audience-aware first-use behavior |
+| Plain-spoken naturalness | compressed/invented Chinese or documentation voice | mixed natural and written phrasing | necessary jargon sits inside Chinese a person would naturally say aloud |
 | Concision | bloated or underexplained | some excess/gap | proportionate |
 | Accessibility | regional/specialist decoding required | mostly accessible | immediate cross-region reading |
 | Dialect naturalness | pasted-on/caricature | uneven | conversational and unforced |

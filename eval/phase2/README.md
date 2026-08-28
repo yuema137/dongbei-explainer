@@ -19,6 +19,7 @@ The reviewer records:
 
 - overall preference on a five-point A/B scale;
 - whether A or B lost or distorted technical information;
+- whether the Chinese sounds like something a person would naturally say, rather than compressed documentation prose;
 - whether either answer overdid conversational/Dongbei style;
 - whether either answer overexplained jargon;
 - a free-form product comment.

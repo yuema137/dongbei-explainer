@@ -1,5 +1,5 @@
 const PREFS=[["a-strong","A 明显更好"],["a-slight","A 稍好"],["same","差不多"],["b-slight","B 稍好"],["b-strong","B 明显更好"]];
-const FLAGS=[["a-info","A 丢失/歪曲技术信息"],["b-info","B 丢失/歪曲技术信息"],["a-style","A 风格过量或不自然"],["b-style","B 风格过量或不自然"],["a-jargon","A 术语解释过多/过少"],["b-jargon","B 术语解释过多/过少"],["a-long","A 太长"],["b-long","B 太长"]];
+const FLAGS=[["a-info","A 丢失/歪曲技术信息"],["b-info","B 丢失/歪曲技术信息"],["a-plain","A 中文不像真人说话"],["b-plain","B 中文不像真人说话"],["a-style","A 东北风格过量/不自然"],["b-style","B 东北风格过量/不自然"],["a-jargon","A 术语解释过多/过少"],["b-jargon","B 术语解释过多/过少"],["a-long","A 太长"],["b-long","B 太长"]];
 const $=id=>document.getElementById(id);let bundle=null,index=0,revealed=false,assignments={},answers={};
 const storageKey=()=>bundle?`dongbei-explainer-phase2-${bundle.bundle_id}`:"";
 function validate(data){if(data?.schema_version!==1||!data.bundle_id||!Array.isArray(data.cases))throw new Error("不是 phase-2 schema v1 bundle");if(data.cases.length<1||data.cases.length>10)throw new Error("case 数量必须在 1–10 之间");const ids=new Set();for(const c of data.cases){if(!c.id||ids.has(c.id)||!c.title||!c.source?.snapshot||!c.request||!c.baseline?.text||!c.full?.text)throw new Error(`case 缺字段或 ID 重复：${c.id||"unknown"}`);ids.add(c.id)}}

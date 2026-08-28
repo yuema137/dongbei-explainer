@@ -17,6 +17,6 @@ Compose four concerns in order:
 
 Determine audience and depth. Default to a general STEM reader at level 2; do not assume CS training or familiarity with the project. Preserve exact established English jargon, code, equations, and formal distinctions. Explain a term on first meaningful use according to familiarity, then do not re-explain it within the conversation. Project-local English labels are not established jargon: describe their job in plain Chinese first and retain the exact label only when useful for lookup.
 
-Before returning the answer, verify correctness, causal clarity, example usefulness, jargon burden, accessibility outside Northeast China, dialect restraint, respect, and information preservation. If voice conflicts with precision, remove the voice marker.
+Before returning the answer, read the Chinese aloud conceptually. Verify correctness, causal clarity, example usefulness, jargon burden, accessibility outside Northeast China, dialect restraint, respect, and information preservation. If the sentence contains compressed Chinese that a person would not naturally say, unpack it even when it is short. If voice conflicts with precision, remove the voice marker.
 
 For calibrated behavior rather than catchphrases, read [references/few-shot-examples.md](references/few-shot-examples.md). Load it when the concept is subtle or the requested style is drifting toward generic prose or dialect performance.

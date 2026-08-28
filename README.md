@@ -2,7 +2,7 @@
 
 > **东北话不是目的。讲明白才是目的。**
 
-`dongbei-explainer` 是一组可组合的 Agent Skills，用自然、具体、带一点东北口语节奏的中文解释技术问题。
+`dongbei-explainer` 是一组可组合的 Agent Skills，用自然、具体、带一点东北口语节奏的中文解释技术问题。这里有两个同样重要的词：**东北话**负责把语气拉得直接、有人味；**大白话**负责让普通 STEM 读者不用先学一套书面黑话，就能跟上事情到底怎么发生。
 
 我们在实际使用 AI 的过程中反复观察到：当你要求它“用东北大白话讲”，回答往往会少绕一点，少堆几层抽象名词，更愿意直接说清楚“谁干了啥、原来咋干、现在改了哪一步”。
 
@@ -13,6 +13,7 @@
 - 先讲原来怎么走，再讲现在改了哪一步；
 - 给一个具体例子，让数据、控制或状态真走一遍；
 - 正式术语该留就留，但第一次需要时马上讲明白；
+- 术语外面的中文得像真人会说的话，不能自己再造“同步强杀”这种压缩黑话；
 - 说清它解决了啥，也说清它没解决啥。
 
 目标读者是有一般 STEM 背景的人：能跟技术推理，但不一定学过计算机，也不需要熟悉正在解释的项目。
@@ -104,7 +105,7 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 
 ## Demo 1：`asyncio.sleep(0)` 为啥没有立刻响应取消？
 
-公开问题：[CPython issue #84977](https://github.com/python/cpython/issues/84977)。issue 中的现象是：task 已经被 `cancel()`，但一次 `await asyncio.sleep(0)` 之后没有马上抛出 `CancelledError`，往往还要再经过几轮 event loop。
+公开问题：[CPython issue #84977](https://github.com/python/cpython/issues/84977)。issue 中的现象是：一个正在由 event loop 管理的 async task 已经被 `cancel()`，但一次 `await asyncio.sleep(0)` 之后没有马上抛出 `CancelledError`，往往还要再经过几轮 event loop。
 
 普通技术回答可能是：
 
@@ -112,19 +113,19 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 
 `dongbei-explainer` 更希望这样讲：
 
-> 先别把 `cancel()` 理解成“当场掐断”。它干的事更像是在 event loop 的待办队列里挂个牌子：这个 task 该取消了。
+> 先别把 `cancel()` 理解成“当场掐断”。event loop 就是那个轮流安排 async task 往下跑的调度器；`cancel()` 更像是在它的待办队列里挂个牌子：这个 task 该取消了。
 >
-> `await asyncio.sleep(0)` 呢？它只保证当前 task 先把位置让出来，让 event loop 转一圈。问题在这儿：这一圈里可能还有恢复 task、处理 callback、再把取消异常送进去这几步，不是一个动作全干完。
+> `await asyncio.sleep(0)` 呢？它只保证当前 task 先把位置让出来，让 event loop 转一圈。问题在这儿：这一圈里可能还有“让 task 接着跑”“执行排队的 callback（回调函数）”“把取消异常送进 task”这几步，不是一下全干完。
 >
-> 你可以把 event loop 想成一个人按队列办事。你刚说“这单撤了”，不等于他手里正在处理的单子瞬间消失；撤单通知也得排进流程。CPython 这个 issue 里，维护者说明 `sleep(0)` 只让出一个 cycle，而相关恢复链可能要两三轮，所以多等几次才看到 `CancelledError`，属于预期调度行为。
+> 你可以把 event loop 想成一个人按队列办事。你刚说“这单撤了”，不等于他手里的单子当场消失；撤单这件事也得轮到他处理。CPython 这个 issue 里，维护者说明 `sleep(0)` 只让 event loop 往前走一轮，而前后几个 callback 可能分在两三轮里执行，所以多等几次才看到 `CancelledError`，这不是取消失效了。
 >
-> 真正该记住的是：`cancel()` 是请求取消，不是同步强杀；`sleep(0)` 是让出一次执行机会，也不是“把所有待处理 callback 清空”。如果你在 coroutine 里跑 CPU-heavy code，往里面塞 `sleep(0)` 也不是根治，应该把重活放到 thread 或 process executor。
+> 真正该记住的是：调用 `cancel()` 只是告诉系统“这个 task 该停了”，不是这行代码一跑，task 就原地没了。`sleep(0)` 也只是让别人先跑一轮，不是把队列里所有事情一次处理完。如果 coroutine——也就是这种能暂停、以后再接着跑的函数——里面有特别吃 CPU 的计算，隔几行塞一个 `sleep(0)` 也治不了根，应该把这段计算交给 thread 或 process executor。
 
-这里的“一个人按队列办事”只负责建立顺序感，随后马上对应回 task、callback 和 event-loop cycle，没有拿比喻替代机制。Python 文档也明确提醒：CPU-bound blocking code 会拖住所有并发 task，应放到 executor 中处理。[官方 asyncio 开发文档](https://docs.python.org/3/library/asyncio-dev.html#running-blocking-code)
+这里的“一个人按队列办事”只负责把先后顺序讲明白，后面马上对应回 task、callback 和 event-loop cycle，没有拿比喻顶替机制。Python 文档也明确提醒：特别吃 CPU、又一直不交回控制权的代码，会让其他 async task 全跟着等；这类计算应该放到 executor 里。[官方 asyncio 开发文档](https://docs.python.org/3/library/asyncio-dev.html#running-blocking-code)
 
 ## Demo 2：监控只有 300 MiB，Kubernetes 为啥在 500 MiB 把 container OOMKilled？
 
-公开问题：[kubernetes/kubernetes issue #114142](https://github.com/kubernetes/kubernetes/issues/114142)。报告里 dashboard 和 Prometheus 大约显示 300 MiB，但 pod 的 cgroup 记录接近 500 MiB，随后发生 OOM kill。
+公开问题：[kubernetes/kubernetes issue #114142](https://github.com/kubernetes/kubernetes/issues/114142)。报告里 dashboard 和 Prometheus 大约显示 300 MiB，但 pod 的 cgroup 记录接近 500 MiB，随后 kernel 因为内存超限执行了 OOM kill，把进程停掉。
 
 普通技术回答可能是：
 
@@ -134,11 +135,11 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 
 > 这事看着矛盾，其实是两块表量的不是一个东西。
 >
-> dashboard 上那条 300 MiB，可能主要是在看某个 container 的 working set；kernel 决定要不要 OOM kill 时，看的却是 cgroup 这本总账。issue 里直接读 cgroup，`memory.usage_in_bytes` 已经到了大约 501 MB，limit 是 500 MiB 左右。再往下拆，光匿名内存大约 322 MB，文件页又有约 182 MB，合起来就快顶线了。
+> dashboard 上那条 300 MiB，可能主要是在看某个 container 最近真正在用、不能轻易回收的那部分内存，常见指标名叫 working set。kernel 决定要不要 OOM kill 时，看的却是 cgroup 记下来的总数。cgroup 是 Linux 给一组进程统一记资源账、设上限的机制。issue 里直接读这本账，`memory.usage_in_bytes` 已经到了大约 501 MB，limit 是 500 MiB 左右。再往下拆，程序自己放数据用掉约 322 MB，读写文件留下的缓存页又有约 182 MB，加起来就快顶线了。
 >
 > 打个短比方：dashboard 像只报“屋里家具占了多少”，cgroup limit 管的是“家具、纸箱和屋里其他东西加一块儿占多少”。你盯着家具只有 300，以为地方还多；房东按总占用一量，已经满了。
 >
-> 所以真正要对的是口径：图上展示的到底是 working set、RSS，还是 container/pod cgroup 的总使用量；memory limit 又落在哪一级 cgroup。OOM 没在跟 dashboard 抬杠，它按 kernel 自己记的那本账执行。这个解释也不能偷懒成“Prometheus 不准”——指标可能完全准确，只是它回答的不是同一个问题。
+> 所以别一看两个数不一样，就认定监控坏了。先查图上画的到底是哪一项：是 working set，是 RSS——进程当前占着的物理内存——还是整个 container/pod cgroup 的总内存；再查 500 MiB 的 limit 到底限制哪一级。两个数可能都没算错，只是一个在问“眼下有多少内存不容易收回来”，另一个在问“这个 cgroup 一共记了多少内存”。kernel 按后面这个数决定要不要 OOM kill。
 
 这个 demo 保留了 issue 里的真实数字，也说明了比喻的边界：决定 OOM 的仍是具体 cgroup 层级和 kernel accounting，不是“房间”本身。
 
