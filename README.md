@@ -224,21 +224,11 @@ OpenAI 当前也把可重复工作流作为 Skills 使用场景；参见 [OpenAI
 
 第一轮人工标了 223 个英文术语和 164 条中文表达。哪些词直接用，哪些词第一次得解释，结果都在 [technical jargon tiers](skills/plain-chinese/references/common-technical-jargon.md) 和 [expression boundary](skills/dongbei-voice/references/expression-boundaries.md)。这不是给全体普通话用户下定义。哪项标得不对，后面接着改。
 
-## 咋知道它是真好使，不是自我感觉良好
+## 这套东西校过吗
 
-不能写完 prompt，自己读着挺美，就说完事了。现在分两轮测：
+校过。词汇边界做过人工标注，完整回答也拿真实技术问题做过 A/B 对照，专门检查它有没有讲清机制、丢掉技术条件或者把东北话说成表演。
 
-1. **词汇边界**：标注哪些表达普通话用户能直接理解，哪些英文术语需要首次简释。
-2. **完整解释对照**：针对真实技术材料生成 baseline 和 full skill 两版，盲评 A/B，记录信息丢失、术语负担、口语自然度和具体修改意见。
-
-前几轮还真测出了毛病：
-
-- `KV cache` 那版说顺溜了，却把剩余计算和显存代价说没了。现在每次改写都得查一遍信息有没有丢；
-- merge/rebase 硬套火车比喻，反而把 commit identity 挡住了。后来干脆换回 commit graph；
-- 第一轮真实 PR 对照把读者当成 senior engineer，`sidecar` 这种项目黑话张嘴就来。现在默认读者是一般 STEM 背景，不要求懂 CS，更不要求熟悉项目；
-- 光加两句“说白了”根本没用。真正的东北大白话得把问题、动作和先后顺序重新捋一遍，不是给原文贴几个口头禅。
-
-评测材料和 rubric 在 [eval/](eval/README.md)，阶段二标注页在 [eval/phase2/](eval/phase2/README.md)。
+这不等于证明“东北话一定更好使”，只能说明这些 skills 不是凭感觉写完就算了。想看具体怎么测的，材料和 rubric 都在 [eval/](eval/README.md)，阶段二标注页在 [eval/phase2/](eval/phase2/README.md)。
 
 ## 目前研究到哪儿了
 
