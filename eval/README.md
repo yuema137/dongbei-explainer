@@ -9,6 +9,11 @@ The suite is behavioral, not string-matched. For each answer:
 3. Compare variants in `samples/comparisons.md`.
 4. Run `scripts/lint_text` on generated samples as a warning-only dialect check.
 
+## Two calibration phases
+
+- Phase 1 labels expression accessibility and English-term familiarity. Its normalized exports live in `annotations/`.
+- [Phase 2](phase2/README.md) compares baseline and full-skill explanations for up to ten real PR/issue cases. Its local HTML UI supports blinded A/B assignment, structured flags, comments, saved progress, and JSON export.
+
 Cross-host runs should use the same canonical skill bytes and input. Codex and Claude Code need not produce identical wording. This repository does not claim live cross-host model results until those runs are actually performed.
 
 Human boundary exports normalized by `scripts/import_annotations` live under `annotations/`. They are versioned calibration inputs; generated skill references must stay traceable to the dataset version.

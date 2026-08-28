@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/dongbei-explainer/phase2-case-bundle.schema.json",
+  "title": "Dongbei Explainer phase-2 comparison bundle",
+  "type": "object",
+  "required": ["schema_version", "bundle_id", "created_at", "cases"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "bundle_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "description": { "type": "string" },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "source", "request", "audience", "depth", "baseline", "full"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "title": { "type": "string", "minLength": 1 },
+          "source": {
+            "type": "object",
+            "required": ["kind", "snapshot"],
+            "properties": {
+              "kind": { "enum": ["issue", "pr", "other"] },
+              "url": { "type": "string" },
+              "revision": { "type": "string" },
+              "snapshot": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": false
+          },
+          "request": { "type": "string", "minLength": 1 },
+          "audience": { "type": "string", "minLength": 1 },
+          "depth": { "enum": [1, 2, 3, 4] },
+          "must_preserve": { "type": "array", "items": { "type": "string" } },
+          "baseline": { "$ref": "#/$defs/output" },
+          "full": { "$ref": "#/$defs/output" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "output": {
+      "type": "object",
+      "required": ["text", "provenance"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "provenance": {
+          "type": "object",
+          "required": ["host", "model", "generated_at", "skill_mode"],
+          "properties": {
+            "host": { "type": "string" },
+            "model": { "type": "string" },
+            "generated_at": { "type": "string", "format": "date-time" },
+            "skill_mode": { "enum": ["baseline", "full"] },
+            "notes": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

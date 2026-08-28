@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Phase 2 · 解释对照标注</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<header><p class="eyebrow">dongbei-explainer · phase 2</p><h1>同一个问题，两种解释，哪个真讲明白了？</h1><p>默认盲评 A/B。这里评的是完整解释，不是数东北词。导入 case bundle 后即可开始。</p></header>
+<section class="toolbar"><label class="import">导入 case bundle<input id="import" type="file" accept="application/json"></label><button id="reveal" class="quiet">揭晓版本</button><button id="export">导出标注</button><button id="reset" class="danger">清空进度</button></section>
+<section class="progress"><span id="progress-label">尚未导入</span><div><i id="progress-bar"></i></div></section>
+<section id="empty" class="empty"><h2>框架准备好了</h2><p>等真实 PR/issue case 准备好后，在上方导入 JSON。每个 bundle 最多 10 个 case。</p></section>
+<article id="card" hidden>
+  <div class="meta"><span id="kind"></span><span id="position"></span></div><h2 id="title"></h2><p id="request"></p><details><summary>查看输入快照与评测条件</summary><pre id="source"></pre><p id="conditions"></p></details>
+  <div class="comparison"><section><h3>A <small id="a-label"></small></h3><div id="answer-a" class="answer"></div></section><section><h3>B <small id="b-label"></small></h3><div id="answer-b" class="answer"></div></section></div>
+  <fieldset><legend>整体上哪个更好？</legend><div id="preference" class="scale"></div></fieldset>
+  <fieldset><legend>发现的问题（可多选）</legend><div id="flags" class="flags"></div></fieldset>
+  <label for="comment">具体反馈</label><textarea id="comment" rows="5" placeholder="哪句话更清楚？哪里丢了技术信息？哪处像硬贴东北话？你希望怎么改？"></textarea>
+  <p id="error" class="error"></p><nav><button id="prev" class="quiet">← 上一题</button><button id="save">保存并下一题 →</button></nav>
+</article>
+</main><script src="app.js"></script></body></html>

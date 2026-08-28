@@ -90,6 +90,8 @@ Calibration already changed the design:
 
 Full notes: [initial calibration findings](eval/calibration-findings.md).
 
+Calibration has two stages. Phase 1 sets expression and terminology boundaries. [Phase 2](eval/phase2/README.md) takes up to ten real PR/issue cases and presents matched baseline/full explanations in a local blinded A/B card UI. The reviewer chooses an overall preference, flags information loss, excessive style or jargon behavior, leaves concrete comments, and exports a versioned JSON result.
+
 ## Validation
 
 ```bash
