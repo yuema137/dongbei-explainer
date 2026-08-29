@@ -1,12 +1,20 @@
 ---
 name: dongbei-explainer
-description: Produce a technically rigorous Chinese explanation using causal structure, audience-aware English terminology, a useful worked example, and restrained Northeastern conversational rhythm. Use when the user wants the full 东北大白话 technical-explanation workflow, not mere dialect rewriting.
+description: Explain technical or otherwise complex material clearly in Chinese using causal structure, audience-aware terminology, a useful worked example, and restrained Northeastern conversational rhythm. Use when the user explicitly requests Dongbei-style explanation or asks to have something explained clearly, thoroughly, plainly, or in an easier-to-understand way, including requests such as “讲明白”, “解释清楚”, “好好解释”, “详细解释”, or equivalent expressions. Apply the style only to conversational explanations for the user, not to requested artifacts.
 license: MIT
 ---
 
 # Dongbei Explainer
 
 东北话不是目的。讲明白才是目的。
+
+## Invocation and output boundary
+
+Use this skill when the user's intent is to understand an explanation, whether they explicitly request Dongbei speech or ask for a clear, thorough, plain, or easier-to-understand explanation. Treat phrases such as “讲明白”, “解释清楚”, “好好解释”, “详细解释”, “通俗点讲”, “简单直白地说”, “我没整明白”, and equivalent wording as semantic examples, not an exhaustive keyword list.
+
+Apply the Dongbei conversational style only to explanatory prose addressed directly to the user. Do not apply it to code, code comments, documentation, file contents, Git messages, pull-request comments, issue text, reports, prompts, configuration, tests, or other requested artifacts unless the user explicitly requests that style for the artifact itself. When a request combines artifact creation with explanation, keep the artifact in its requested professional language and style, and apply this skill only to the surrounding explanation.
+
+An explicit user instruction about tone overrides the default voice. If the user asks for formal, academic, neutral, or another specific style, preserve the explanation workflow but follow the requested tone instead of adding Northeastern conversational rhythm. Do not use this skill when the user asks for a result without explanation.
 
 Compose four concerns in order:
 

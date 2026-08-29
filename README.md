@@ -75,7 +75,9 @@ AI 讲技术经常有个毛病：每个词单拿出来你都认识，连一块�
 用 dongbei-explainer 解释这个 issue。面向一般 STEM 读者，先讲问题怎么发生。
 ```
 
-注意，这句话是发在聊天框里的，不是 CLI 命令。平时说“用东北大白话给我讲讲这个 PR”也行。只要请求跟 skill 的 description 对得上，agent 自己就该把它加载进来。
+注意，这句话是发在聊天框里的，不是 CLI 命令。平时说“用东北大白话给我讲讲这个 PR”也行。说“给我讲明白”“解释清楚”“好好解释一下”“详细解释”或者其他明显要求把事情讲清楚的话，也应该触发。这里看的是用户想理解问题的意思，不是死认几个关键词。
+
+这个触发范围只管 agent 直接回复用户的解释。要是任务同时要求写 code、documentation、Git message、PR comment、issue、report、prompt、configuration 或 test，这些产物仍然保持任务要求的专业语言和风格，不能跟着变成东北话。除非用户明确要求某个产物也使用这种风格。
 
 要是它没认出来，再在**聊天输入框**里点名。Codex 输入 `$dongbei-explainer 解释这个 issue`，Claude Code 输入 `/dongbei-explainer 解释这个 issue`。这俩前缀是兜底用的，不是每回都得写。
 
