@@ -1,0 +1,58 @@
+version: 1
+purpose: semantic activation coverage for dongbei-explainer
+
+positive:
+  - {id: explain, prompt: "解释一下 dependency inversion。", family: direct}
+  - {id: tell-me, prompt: "给我讲讲 worktree。", family: direct}
+  - {id: help-understand, prompt: "帮我理解这个公式为什么有 offset。", family: direct}
+  - {id: popularize, prompt: "科普一下 quantization 是干嘛的。", family: direct}
+  - {id: how-it-works, prompt: "介绍一下这个 scheduler 具体怎么工作。", family: direct}
+  - {id: how-to-understand, prompt: "这段话到底该怎么理解？", family: direct}
+  - {id: say-clearly, prompt: "把这个问题说清楚。", family: clarity}
+  - {id: make-clear, prompt: "你给我说明白，这两个指标到底差在哪。", family: clarity}
+  - {id: explain-clearly, prompt: "讲清楚这个 PR 改了哪一步。", family: clarity}
+  - {id: explain-until-clear, prompt: "把 rebase 为啥改 hash 讲明白。", family: clarity}
+  - {id: clarify, prompt: "解释清楚这个 error 是怎么来的。", family: clarity}
+  - {id: explain-understandably, prompt: "这个公式给我解释明白。", family: clarity}
+  - {id: careful, prompt: "仔细讲讲 event loop 到底怎么调度。", family: depth}
+  - {id: expand, prompt: "展开讲讲这个设计。", family: depth}
+  - {id: from-start, prompt: "我不熟这个项目，从头讲讲这个 issue。", family: depth}
+  - {id: step-by-step, prompt: "一步一步讲，数据具体怎么走。", family: depth}
+  - {id: trace, prompt: "咱把这个调用链捋一遍。", family: depth}
+  - {id: unpack, prompt: "这个概念掰开讲讲。", family: depth}
+  - {id: thorough, prompt: "别只下定义，把机制讲透。", family: depth}
+  - {id: properly-explain, prompt: "这个问题你好好讲讲。", family: depth}
+  - {id: in-depth, prompt: "深入讲讲这里的 memory ordering。", family: depth}
+  - {id: plain, prompt: "通俗点讲，KV cache 到底存了啥。", family: plainness}
+  - {id: simple, prompt: "简单点说，这俩有啥区别。", family: plainness}
+  - {id: direct, prompt: "直白点，这个 abstraction 到底省了哪一步。", family: plainness}
+  - {id: plain-language, prompt: "用大白话讲讲 gradient accumulation。", family: plainness}
+  - {id: human-language, prompt: "别念文档了，说人话。", family: plainness}
+  - {id: no-circling, prompt: "别绕，直接告诉我这事为什么发生。", family: plainness}
+  - {id: no-academic, prompt: "别太学术，但公式别丢。", family: plainness}
+  - {id: accessible, prompt: "讲得通俗易懂一点。", family: plainness}
+  - {id: intuitive-depth, prompt: "深入浅出地讲讲 regularization。", family: plainness}
+  - {id: confused-hearing, prompt: "刚才那段我没听懂。", family: confusion}
+  - {id: confused-reading, prompt: "这个 README 我没看明白，你给我捋捋。", family: confusion}
+  - {id: still-confused, prompt: "还是不明白，换个具体例子。", family: confusion}
+  - {id: what-is-going-on, prompt: "这个 race 到底怎么回事？", family: confusion}
+  - {id: meaning, prompt: "这里说的 eventual consistency 是啥意思？", family: confusion}
+  - {id: puzzled, prompt: "我有点懵，这两个 cache 到底是什么关系？", family: confusion}
+  - {id: difference, prompt: "process 和 thread 的区别到底在哪？", family: comparison}
+  - {id: why, prompt: "显存满了，utilization 为什么还这么低？", family: causality}
+  - {id: changed-step, prompt: "这个 PR 到底改了哪一步？", family: causality}
+  - {id: example, prompt: "举个例子，我想看看一条 request 怎么走。", family: concrete}
+  - {id: diagram, prompt: "画个小图看看 merge 和 rebase 的区别。", family: concrete}
+  - {id: purpose, prompt: "这东西到底干嘛的，有啥用？", family: concrete}
+
+negative_or_voice_suppressed:
+  - {id: artifact-readme, prompt: "把 README 这段写清楚，直接改文件。", expected: "edit artifact in its requested professional style"}
+  - {id: artifact-pr, prompt: "写一段清楚的 PR description。", expected: "write artifact without Dongbei voice"}
+  - {id: artifact-comment, prompt: "把这段 code comment 说明白一点。", expected: "edit artifact without Dongbei voice"}
+  - {id: artifact-translate, prompt: "把‘讲清楚这个机制’翻译成英文。", expected: "translate quoted text; do not activate from the quote"}
+  - {id: artifact-search, prompt: "搜索仓库里哪些文件写了‘解释清楚’。", expected: "perform search; do not activate from the search term"}
+  - {id: no-explanation, prompt: "修掉这个测试，别解释。", expected: "return the requested result without explanation"}
+  - {id: concise-result, prompt: "只告诉我应该改哪一行。", expected: "give concise result; do not add an explainer workflow"}
+  - {id: formal-tone, prompt: "详细解释这个定理，使用正式学术中文。", expected: "use explanation workflow but suppress Dongbei voice"}
+  - {id: neutral-tone, prompt: "讲清楚这个事故，语气保持中性克制。", expected: "use explanation workflow but suppress Dongbei voice"}
+  - {id: quoted-example, prompt: "判断‘说清楚’是不是动补结构。", expected: "answer the language question; do not activate from the quoted phrase alone"}

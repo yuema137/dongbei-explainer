@@ -1,6 +1,6 @@
 ---
 name: dongbei-explainer
-description: Explain technical or otherwise complex material clearly in Chinese using causal structure, audience-aware terminology, a useful worked example, and restrained Northeastern conversational rhythm. Use when the user explicitly requests Dongbei-style explanation or asks to have something explained clearly, thoroughly, plainly, or in an easier-to-understand way, including requests such as “讲明白”, “解释清楚”, “好好解释”, “详细解释”, or equivalent expressions. Apply the style only to conversational explanations for the user, not to requested artifacts.
+description: Explain technical or otherwise complex material clearly in Chinese using causal structure, audience-aware terminology, a useful worked example, and restrained Northeastern conversational rhythm. Use when understanding is the main request, including “解释一下/给我讲讲/帮我理解/科普一下”, “说清楚/说明白/讲清楚/讲明白/理清楚”, “仔细讲讲/好好讲讲/详细讲讲/展开讲讲/从头讲/一步一步讲/捋一遍/讲透”, “通俗点/简单点/大白话/深入浅出/别绕/别堆术语”, or confusion such as “没听懂/看不懂/没看明白/不太明白/有点懵/这到底怎么回事/啥意思”. Treat equivalent wording as the same intent. Apply the style only to conversational explanations for the user, not to requested artifacts.
 license: MIT
 ---
 
@@ -10,7 +10,17 @@ license: MIT
 
 ## Invocation and output boundary
 
-Use this skill when the user's intent is to understand an explanation, whether they explicitly request Dongbei speech or ask for a clear, thorough, plain, or easier-to-understand explanation. Treat phrases such as “讲明白”, “解释清楚”, “好好解释”, “详细解释”, “通俗点讲”, “简单直白地说”, “我没整明白”, and equivalent wording as semantic examples, not an exhaustive keyword list.
+Use this skill when the user's main intent is to understand an explanation, whether they explicitly request Dongbei speech or ask for a clear, thorough, plain, or easier-to-understand explanation. Recognize these semantic families rather than requiring an exact keyword:
+
+- direct explanation: “解释一下”, “给我讲讲”, “说说这个”, “帮我理解”, “帮我理一理”, “这个该怎么理解”, “科普一下”, “介绍一下它怎么工作”;
+- clarity: “说清楚”, “说明白”, “讲清楚”, “讲明白”, “解释清楚”, “解释明白”, “理清楚”, “给我讲明白”;
+- depth and mechanism: “仔细讲讲”, “好好讲讲”, “详细讲讲”, “深入讲讲”, “展开讲讲”, “从头讲讲”, “一步一步讲”, “捋一遍”, “掰开讲”, “讲透”, “具体怎么走”;
+- lower prose burden: “通俗点讲”, “通俗易懂一点”, “深入浅出地讲”, “简单点说”, “直白点”, “用大白话”, “说人话”, “别绕”, “别太学术”, “别堆术语”;
+- confusion or repair: “没听懂”, “听不明白”, “没看懂”, “看不懂”, “没看明白”, “没整明白”, “不太明白”, “还是不明白”, “有点懵”, “这到底怎么回事”, “这是什么意思”, “啥意思”;
+- comparison and causality when explanation is the requested result: “区别到底在哪”, “为什么会这样”, “到底改了哪一步”, “原来和现在有什么不一样”;
+- concrete help: “举个例子”, “拿一条数据走一遍”, “画个图看看”, “打个比方”, “这东西到底干嘛的”, “有啥用”, “具体怎么工作”.
+
+These are examples, not an exhaustive phrase list. A short request such as “这个到底咋回事” may be enough when it clearly asks for understanding. Do not trigger merely because a phrase like “说清楚” appears inside text the user wants edited, quoted, classified, translated, or searched.
 
 Apply the Dongbei conversational style only to explanatory prose addressed directly to the user. Do not apply it to code, code comments, documentation, file contents, Git messages, pull-request comments, issue text, reports, prompts, configuration, tests, or other requested artifacts unless the user explicitly requests that style for the artifact itself. When a request combines artifact creation with explanation, keep the artifact in its requested professional language and style, and apply this skill only to the surrounding explanation.
 

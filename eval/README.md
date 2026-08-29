@@ -2,6 +2,8 @@
 
 `cases.yaml` contains 16 single-turn concepts across software, systems, ML, and statistics. `multi-turn.yaml` adds six conversations (27% of the 22 case artifacts; 37.5% relative to single-turn cases) to test first-use terminology memory and depth shifts.
 
+`invocation-cases.yaml` checks semantic trigger coverage and false-positive boundaries. It includes plain requests for clarity, depth, lower prose burden, confusion repair, comparison, and causality, plus artifact-only and explicit-tone requests that must not receive Dongbei voice.
+
 The suite is behavioral, not string-matched. For each answer:
 
 1. Check every `must`, `misconceptions`, and `preserve` item.
