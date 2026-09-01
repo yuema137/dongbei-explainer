@@ -2,7 +2,7 @@
   <img src="assets/dongbei-explainer-title.png" alt="dongbei-explainer：要把大象装冰箱拢共分几步" width="100%">
 </p>
 
-# dongbei-explainer
+# DongbeiGPT
 
 > **别管名字多唬人，先看它到底干了啥。**
 
